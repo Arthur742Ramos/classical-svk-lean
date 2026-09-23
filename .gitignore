@@ -1,0 +1,9 @@
+.lake/
+.cache/
+*.olean
+*.olean.private
+*.olean.server
+*.ilean
+*.ir
+*.trace
+*.c

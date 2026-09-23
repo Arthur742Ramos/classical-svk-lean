@@ -1,0 +1,175 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Classical Seifert–van Kampen theorem for the fundamental groupoid"
+  description: >-
+    Proves that for every topological space X and open cover X = U ∪ V, the
+    inclusion-induced square of Mathlib's ordinary continuous-path
+    fundamental groupoids for U ∩ V, U, V, and X is a pushout in Cat. The
+    statement retains all points as objects and assumes no basepoint,
+    connectedness, or separation conditions. The proof transfers the pinned
+    directed van Kampen pushout through a natural equivalence between the
+    directed fundamental category for the indiscrete preorder and Mathlib's
+    ordinary fundamental groupoid.
+  authors:
+    - "Arthur Freitas Ramos"
+  responsible_maintainers:
+    - "Arthur Freitas Ramos"
+  license: "Apache-2.0"
+
+classification:
+  arxiv: ["math.AT", "math.CT", "math.LO"]
+  msc2020: ["55Q05", "18B40", "03B35"]
+
+sources:
+  - title: "Groupoids and Van Kampen's Theorem"
+    authors:
+      - "Ronald Brown"
+    id: "10.1112/plms/s3-17.3.385"
+    type: "article"
+    location: "Theorem 3.4 and the full-groupoid case in §5"
+    relationship: "formalizes"
+    note: >-
+      Primary source for the groupoid form of the open-cover theorem. The
+      selected statement is the full continuous-path groupoid pushout for a
+      two-open cover. This project makes no claim that the mathematical
+      theorem is new.
+    license: "unknown"
+    author_endorsement: "not-contacted"
+  - title: "The Directed Van Kampen Theorem in Lean"
+    authors:
+      - "Henning Basold"
+      - "Peter Bruin"
+      - "Dominique Lawson"
+    id: "10.4230/LIPIcs.ITP.2024.8"
+    type: "conference paper and formalization"
+    location: "The directed fundamental-category pushout theorem"
+    relationship: "adapts"
+    note: >-
+      The proof uses the formalized directed van Kampen theorem as an explicit
+      lemma, specializes its directedness structure to the indiscrete preorder,
+      and transports the result to Mathlib's ordinary fundamental groupoid.
+      The directed theorem is attributed to its authors and is not claimed as
+      new here.
+    license: "CC-BY-4.0"
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://github.com/Dominique-Lawson/Directed-Topology-Lean-4/tree/009529606c66d37ef93b4b81b8587f71ce4d2c56"
+    relationship: "builds-on"
+    note: >-
+      Exact imported source is Lean4/directed_van_kampen.lean at commit
+      009529606c66d37ef93b4b81b8587f71ce4d2c56. The candidate uses the
+      directed pushout theorem and proves the universal-preorder equivalence
+      and naturality bridge needed for the selected classical statement.
+  - id: "https://github.com/leanprover-community/mathlib4/tree/a6a17daf8c81a2c35aff2e43a431a7c591fa708a"
+    relationship: "builds-on"
+    note: >-
+      Exact Mathlib pin for the ordinary path fundamental groupoid, induced
+      functors, topological subspaces, and categorical pushout API. Challenge
+      imports only Mathlib.
+  - id: "https://github.com/Arthur742Ramos/ComputationalPathsLean/tree/257c659b7973aeda900d86a5da73b208712c7523"
+    relationship: "independent"
+    note: >-
+      This immutable snapshot contains computational-path based SVK
+      equivalences and presentation results. No definitions, source files, or
+      proof terms are reused. The result selected here is instead the pushout
+      for actual continuous-path groupoids of arbitrary open subsets, with all
+      points as objects and without a basepoint or connectedness hypotheses.
+  - id: "https://isa-afp.org/entries/Seifert-Van-Kampen.html"
+    relationship: "independent"
+    note: >-
+      Related Isabelle/HOL formalization of a based fundamental-group theorem
+      under path-connectedness hypotheses. No Isabelle source or proof is
+      reused; the present selected result is an all-object groupoid pushout.
+
+status:
+  scope: >-
+    An arbitrary topological space X, open subsets U and V with U ∪ V = X,
+    and the four continuous-path fundamental groupoids of U ∩ V, U, V, and X.
+    No basepoint, path-connectedness, connectedness of the overlap, separation
+    axiom, or manifold structure is assumed. The conclusion is the categorical
+    pushout property for the maps induced by the four subspace inclusions.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "ClassicalSVK.seifert_van_kampen_groupoid"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["gpt-6-astra"]
+      framework: "Codex"
+      tool_setup: >-
+        AI-assisted theorem transfer, Lean proof engineering, provenance and
+        literature review, package checks, and preparation of pinned Palomar
+        renderer and mechanical-verification workflows.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        The responsible maintainer requested a classical topological Lean
+        formalization and a focused package prepared for Palomar review.
+    - method: "manual"
+      models: []
+      framework: "Lean, Git, and mathematical review"
+      tool_setup: >-
+        Human direction of scope, authorship, maintenance, and any external
+        submission decision.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+      prompting_notes: "The responsible maintainer retains authorship and submission responsibility."
+  spend_usd: "subscription-based"
+  notes: >-
+    AI assistance is disclosed without treating the agent as an author.
+    Mechanical checks establish proof/build and package properties; they do
+    not establish novelty, independent mathematical review, or editorial
+    acceptance.
+
+fidelity:
+  divergences: >-
+    The statement is the full fundamental-groupoid case of the two-open-cover
+    theorem: its groupoids contain every point of each space as an object,
+    unlike a based fundamental-group statement. Mathlib represents paths on
+    the unit interval and endpoint-preserving homotopy; the proof identifies
+    these path classes with the directed path classes for the indiscrete
+    preorder. The argument explicitly builds on the directed theorem by
+    Basold, Bruin, and Lawson. It does not claim a new mathematical theorem,
+    reproduce the earlier computational-path proof, or claim an independent
+    proof of the directed result.
+
+review:
+  status: "self-assessed"
+  reviewers: []
+  notes: >-
+    The proof and statement boundary are checked by Lean, the package scripts,
+    and the pinned Palomar workflows. No independent human line-by-line
+    review, Palomar editorial acceptance, intake, or registration is claimed.
+
+alignment:
+  namespace: "ClassicalSVK"
+  statements:
+    - source: "Brown, Groupoids and Van Kampen's Theorem, Theorem 3.4 and §5"
+      lean: "ClassicalSVK.seifert_van_kampen_groupoid"
+      module: "Challenge.lean and Solution.lean"
+      status: "proved"
+      note: >-
+        Pushout of ordinary fundamental groupoids along the inclusions in an
+        arbitrary two-open cover, with no based or connectedness hypotheses.
+
+acknowledgements: >-
+  Ronald Brown for the groupoid formulation of van Kampen's theorem; Henning
+  Basold, Peter Bruin, and Dominique Lawson for the directed van Kampen
+  formalization used as an explicit dependency; the Mathlib contributors;
+  Arthur Freitas Ramos for human authorship and maintenance; and the Palomar,
+  Comparator, Lean4Export, Landrun, and NanoDa projects for verification tools.
