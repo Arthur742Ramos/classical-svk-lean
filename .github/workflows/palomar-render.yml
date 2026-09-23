@@ -101,6 +101,22 @@ jobs:
             --work-dir "$RUNNER_TEMP/palomar-render" \
             --output "$RUNNER_TEMP/palomar-render/report.json"
 
+      - name: Prefetch pinned ProofWidgets release for sandboxed cache discovery
+        if: steps.prepare.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          proofwidgets_dir="$RUNNER_TEMP/palomar-render/workspace/.lake/packages/proofwidgets/.lake"
+          mkdir -p "$proofwidgets_dir"
+          archive="$proofwidgets_dir/ProofWidgets4.tar.gz"
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output "$archive" \
+            https://github.com/leanprover-community/ProofWidgets4/releases/download/v0.0.87/ProofWidgets4.tar.gz
+          echo "ce3f6cd33c49b0b6e177cb2aba77be3a39988db0d6bec9dd6119413e260ac725  $archive" \
+            | sha256sum --check
+          cat > "$archive.trace" <<'JSON'
+          {"synthetic":false,"schemaVersion":"2025-09-10","outputs":null,"log":[{"message":".> curl -s -S -f -o ProofWidgets4.tar.gz -L https://github.com/leanprover-community/ProofWidgets4/releases/download/v0.0.87/ProofWidgets4.tar.gz","level":"trace"}],"inputs":[],"depHash":"cc5cfb8ba8defa4f"}
+          JSON
+
       - name: Install pinned elan
         if: steps.prepare.outputs.ready == 'true'
         run: |
