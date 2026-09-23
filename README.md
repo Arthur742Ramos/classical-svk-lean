@@ -52,8 +52,11 @@ Palomar entry.
 
 ## Status
 
-The Lean proof has compiled in the exact Lean 4.6.0-rc1 and Mathlib dependency
-environment used by the pinned directed formalization. The fresh candidate
-repository's hosted Linux build, renderer, Comparator/NanoDa replay, and
-research review are tracked separately in [VERIFICATION.md](VERIFICATION.md).
-No Palomar intake or registration is claimed.
+The full Lake target `Solution` compiled locally with Lean 4.28.0 and the exact
+Mathlib pin in `lake-manifest.json`. The directed-topology source is vendored
+at its disclosed commit and ported for this toolchain; its hashes and retained
+MIT notice are documented under `Lean4/`. The fresh public commit still needs
+its hosted Linux build, pinned Palomar renderer, and Comparator/NanoDa replay.
+These gates and any independent review are tracked separately in
+[VERIFICATION.md](VERIFICATION.md). No Palomar intake or registration is
+claimed.

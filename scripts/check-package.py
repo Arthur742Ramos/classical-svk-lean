@@ -11,7 +11,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MATHLIB_SHA = "a6a17daf8c81a2c35aff2e43a431a7c591fa708a"
+MATHLIB_SHA = "8f9d9cff6bd728b17a24e163c9402775d9e6a365"
 DIRECTED_SHA = "009529606c66d37ef93b4b81b8587f71ce4d2c56"
 THEOREM = "ClassicalSVK.seifert_van_kampen_groupoid"
 DEFINITION = "ClassicalSVK.completeStatement"
@@ -82,6 +82,11 @@ def main() -> None:
         "ClassicalSVK/Bridge/Naturality2.lean",
         "ClassicalSVK/Bridge/Iso.lean",
         "ClassicalSVK/Pushout.lean",
+        "Lean4.lean",
+        "Lean4/directed_van_kampen.lean",
+        "Lean4/LICENSE.md",
+        "Lean4/PORTING.md",
+        "Lean4/vendor-manifest.json",
         "scripts/check-closed-statement.lean",
         "scripts/check-axioms.py",
         "scripts/check-provenance.py",
@@ -130,20 +135,17 @@ def main() -> None:
     )
 
     lakefile = (ROOT / "lakefile.lean").read_text(encoding="utf-8")
-    require(MATHLIB_SHA in lakefile and DIRECTED_SHA in lakefile,
-            "Lakefile must pin Mathlib and Directed-Topology-Lean-4 by full commit")
+    require(MATHLIB_SHA in lakefile and "mathlib4.git" in lakefile,
+            "Lakefile must pin the selected Mathlib commit by full SHA")
     manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
     require(not any(package.get("type") == "path" for package in manifest["packages"]),
             "Lake manifest must not contain path dependencies")
     packages = {package["name"]: package for package in manifest["packages"]}
     mathlib = packages.get("mathlib", {})
-    directed = packages.get("lean_4", {})
     require(mathlib.get("rev") == MATHLIB_SHA and mathlib.get("type") == "git",
             "Mathlib manifest pin changed")
-    require(directed.get("rev") == DIRECTED_SHA and directed.get("type") == "git",
-            "Directed-Topology-Lean-4 manifest pin changed")
     require((ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
-            == "leanprover/lean4:v4.6.0-rc1", "Lean toolchain pin changed")
+            == "leanprover/lean4:v4.28.0", "Lean toolchain pin changed")
 
     metadata_text = (ROOT / "formalization.yaml").read_text(encoding="utf-8")
     metadata = yaml.safe_load(metadata_text)
@@ -166,6 +168,8 @@ def main() -> None:
             "structured Directed-Topology provenance is missing")
     require("Lean4/directed_van_kampen.lean" in directed_id.get("note", ""),
             "Directed-Topology source module is not recorded")
+    require("Lean4/vendor-manifest.json" in directed_id.get("note", ""),
+            "vendored Directed-Topology source manifest is not recorded")
     require(mathlib_id is not None and mathlib_id.get("relationship") == "builds-on",
             "structured Mathlib provenance is missing")
     require(prior_id is not None and prior_id.get("relationship") == "independent",

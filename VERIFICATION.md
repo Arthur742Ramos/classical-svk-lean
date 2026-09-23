@@ -1,30 +1,42 @@
 # Verification record
 
-This file records distinct evidence for the source proof, package boundary,
-Palomar renderer, and Palomar mechanical verifier. A successful build alone is
-not treated as a renderer or mechanical pass.
+This record keeps the source build, package checks, renderer, mechanical
+verification, independent review, and any Palomar intake as distinct gates.
 
-## Current candidate
+## Current artifact
 
-- Repository commit: pending initial public repository commit.
-- Palomar intake: none. Preparation does not create an intake or register an
-  entry.
+- Repository: <https://github.com/Arthur742Ramos/classical-svk-lean>
+- Candidate commit: pending the fresh verified-source commit.
+- Palomar intake or registration: none.
+
+## Historical candidate
+
+The initial commit `661ae65de04ec3ef1ae7d9a07e919312f0d4d776` is historical.
+Its workflows used an incompatible Lean 4.6 setup and did not verify the
+current ported source:
+
+- Historical renderer run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35880932641>
+- Historical mechanical run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35880932600>
+
+Those receipts do not establish any gate for the replacement commit.
 
 ## Gates
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Full proof in the pinned Lean 4.6.0-rc1 / Mathlib environment | Passed by sequential module compilation in the reference checkout; exact candidate replay pending | Candidate Lean modules, including Solution, compiled against the exact locked Mathlib and directed-topology sources. The hosted Linux workflow will run `lake build Challenge Solution` on the immutable candidate commit. |
-| Candidate package build on Linux | Pending | Must be run against the final immutable candidate commit. |
-| Axiom and proof-hole audit | Passed locally | `scripts/check-axioms.py`: the selected theorem uses only `propext`, `Classical.choice`, and `Quot.sound`. |
-| Closed Challenge statement-body audit | Passed locally | `scripts/check-closed-statement.lean`: checked six generated proposition proofs and found no reachable candidate-defined mathematical data. |
-| Package/schema and structured provenance checks | Passed locally | `scripts/check-package.py` and `scripts/check-provenance.py`. |
-| Pinned Palomar Challenge renderer, including core-notation audit under Linux Landrun | Pending | GitHub Actions workflow palomar-render.yml |
-| Pinned Palomar Comparator, Lean4Export, NanoDa, and mechanical verifier | Pending | GitHub Actions workflow palomar-mechanical.yml |
+| Full candidate proof and package build | Passed locally | `lake build Challenge Solution` completed successfully in this checkout with Lean 4.28.0 and Mathlib commit `8f9d9cff6bd728b17a24e163c9402775d9e6a365` (3,205 build jobs). |
+| Challenge/solution statement match and Mathlib-only Challenge boundary | Passed locally | `python scripts/check-package.py`; Challenge imports Mathlib only and agrees with the selected theorem. |
+| Closed Challenge compiled-body audit | Passed locally | `lake env lean scripts/check-closed-statement.lean`; checked seven compiler-generated proof helpers and found no candidate-defined mathematical data. |
+| Axiom and proof-hole audit | Passed locally | `python scripts/check-axioms.py`; the theorem uses only `propext`, `Classical.choice`, and `Quot.sound`, and `Solution.lean` has no proof-hole token. |
+| Schema, source hashes, and structured provenance | Passed locally | Package and provenance scripts passed, including remote hash comparisons for all 20 compatibility-ported source files. |
+| Pinned Palomar renderer with Linux Landrun core-notation audit | Pending replacement commit | `.github/workflows/palomar-render.yml`; must pass against the exact candidate SHA. |
+| Pinned Comparator, NanoDa, and Palomar mechanical replay | Pending replacement commit | `.github/workflows/palomar-mechanical.yml`; this does not itself create an intake. |
 | Independent mathematical review | Not performed | No independent reviewer is claimed. |
-| Palomar editorial review or registration | Not performed | No intake or registration is claimed. |
+| Palomar editorial acceptance, intake, or registration | Not performed | Preparation alone does not register an entry. |
 
-The full upstream dependency is pinned to commit
-009529606c66d37ef93b4b81b8587f71ce4d2c56 and Mathlib to commit
-a6a17daf8c81a2c35aff2e43a431a7c591fa708a. Hosted release evidence must name
-the exact candidate commit and must not be inferred from another checkout.
+The directed-topology source commit is
+`009529606c66d37ef93b4b81b8587f71ce4d2c56`; Mathlib is pinned to
+`8f9d9cff6bd728b17a24e163c9402775d9e6a365`. All hosted release evidence must
+refer to the replacement artifact's exact commit.

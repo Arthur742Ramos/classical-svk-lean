@@ -1,5 +1,6 @@
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
-import Mathlib.CategoryTheory.Limits.Shapes.CommSq
+import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 /-!
 # Seifert--van Kampen for the classical fundamental groupoid

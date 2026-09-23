@@ -19,25 +19,27 @@ elab "#audit_closed_statement" : command => do
     unless info.type == .sort .zero do
       throwError "selected completeStatement must have the closed type Prop"
     let mut checkedProofs := 0
-    for name in info.value.getUsedConstants do
+    let mut pending := info.value.getUsedConstants.toList
+    let mut visited : List Name := []
+    while !pending.isEmpty do
+      let name := pending.head!
+      pending := pending.tail!
+      if name ∈ visited then
+        continue
+      visited := name :: visited
       match env.getModuleIdxFor? name with
       | none => throwError "statement body dependency has no defining module: {name}"
       | some moduleIndex =>
         let definingModule := env.header.moduleNames[moduleIndex.toNat]!
         if isCandidateModule definingModule then
           let generatedProofName :=
-            (name.toString.splitOn (root.toString ++ ".proof_")).length > 1
+            name.toString.startsWith (root.toString ++ "._proof_")
           unless definingModule == `Challenge && generatedProofName do
             throwError "reachable candidate-defined mathematical data: {name}"
           match env.find? name with
           | some (.thmInfo theoremInfo) =>
             for dependency in theoremInfo.type.getUsedConstants do
-              match env.getModuleIdxFor? dependency with
-              | some dependencyIndex =>
-                let dependencyModule := env.header.moduleNames[dependencyIndex.toNat]!
-                if isCandidateModule dependencyModule then
-                  throwError "generated theorem type refers to candidate-defined data: {dependency}"
-              | none => pure ()
+              pending := dependency :: pending
             checkedProofs := checkedProofs + 1
           | _ => throwError "generated statement helper is not a theorem: {name}"
     logInfo m!"Closed statement body audit passed; checked {checkedProofs} generated proposition proofs and found no candidate-defined mathematical data."

@@ -1,6 +1,7 @@
 import Lean4.directed_van_kampen
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
-import Mathlib.CategoryTheory.Limits.Shapes.CommSq
+import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 open CategoryTheory
 open scoped unitInterval FundamentalCategory
@@ -29,7 +30,7 @@ theorem pathToDipath_toPath {x y : X} (p : Path x y) : (pathToDipath p).toPath =
 
 theorem dipathDihomotopic_to_pathHomotopic {x y : X} {p q : Dipath x y}
     (h : p.Dihomotopic q) : p.toPath.Homotopic q.toPath := by
-  refine EqvGen.rec
+  refine Relation.EqvGen.rec
     (motive := fun p q _ => p.toPath.Homotopic q.toPath)
     ?_ ?_ ?_ ?_ h
   · intro p q h
@@ -45,7 +46,7 @@ theorem dipathDihomotopic_to_pathHomotopic {x y : X} {p q : Dipath x y}
 theorem pathHomotopic_to_dipathDihomotopic {x y : X} {p q : Path x y}
     (h : p.Homotopic q) : (pathToDipath p).Dihomotopic (pathToDipath q) := by
   rcases h with ⟨H⟩
-  exact EqvGen.rel _ _ ⟨Dipath.Dihomotopy.hom_to_dihom
+  exact Relation.EqvGen.rel _ _ ⟨Dipath.Dihomotopy.hom_to_dihom
     (p₀ := pathToDipath p) (p₁ := pathToDipath q) H
     (by intro a b γ hγ; change Monotone _; intro s t hst; trivial)⟩
 

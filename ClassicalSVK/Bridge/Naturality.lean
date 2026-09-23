@@ -16,10 +16,12 @@ local instance : DirectedSpace Y := DirectedSpace.Preorder Y
 attribute [local instance] Path.Homotopic.setoid Dipath.Dihomotopic.setoid
 
 lemma directedToClassical_naturality (f : dTopCat.of X ⟶ dTopCat.of Y) :
-    (FundamentalCategory.fundamentalCategoryFunctor.map f) ⋙ directedToClassical (X := Y) =
-      directedToClassical (X := X) ⋙ CategoryTheory.Grpd.forgetToCat.map
-        (FundamentalGroupoid.fundamentalGroupoidFunctor.map
-          (show TopCat.of X ⟶ TopCat.of Y from f.toContinuousMap)) := by
+    (FundamentalCategory.fundamentalCategoryFunctor.map f).toFunctor ⋙
+        directedToClassical (X := Y) =
+        directedToClassical (X := X) ⋙
+        (CategoryTheory.Grpd.forgetToCat.map
+          (FundamentalGroupoid.fundamentalGroupoidFunctor.map
+            (TopCat.ofHom f.toContinuousMap))).toFunctor := by
   refine CategoryTheory.Functor.ext ?_ ?_
   · intro x
     rfl
