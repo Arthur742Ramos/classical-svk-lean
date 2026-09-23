@@ -52,11 +52,18 @@ Palomar entry.
 
 ## Status
 
-The full Lake target `Solution` compiled locally with Lean 4.28.0 and the exact
-Mathlib pin in `lake-manifest.json`. The directed-topology source is vendored
-at its disclosed commit and ported for this toolchain; its hashes and retained
-MIT notice are documented under `Lean4/`. The fresh public commit still needs
-its hosted Linux build, pinned Palomar renderer, and Comparator/NanoDa replay.
-These gates and any independent review are tracked separately in
-[VERIFICATION.md](VERIFICATION.md). No Palomar intake or registration is
-claimed.
+The frozen Palomar candidate is commit
+`856159930dbdaa37aaa60978e76274cb1e84e96c` in
+[`classical-svk-lean`](https://github.com/Arthur742Ramos/classical-svk-lean).
+It passed the exact pinned Palomar renderer and mechanical replay; the run
+records and superseded candidates are listed in [VERIFICATION.md](VERIFICATION.md).
+The README and verification record may be updated in later documentation-only
+commits; submit the named candidate SHA rather than treating a newer branch
+head as a verified artifact.
+
+The renderer passed on Linux under Landrun, including the core-notation audit.
+The mechanical replay passed Comparator, NanoDa, and the unmodified Palomar
+verifier. The proof uses the established directed van Kampen formalization via
+a proved equivalence with Mathlib's ordinary continuous-path groupoid; it is
+not an independent proof of the directed theorem. There is no independent
+human review or Palomar editorial decision, intake, or registration claimed.
