@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: PalomarRegistry/PalomarSubmission
-          ref: a013555a88a0fc9ec910a09ea833dc9cc338db35
+          ref: 56689ef65c4e97dcfa31b3c166f492337fb4976b
           path: pipeline
           persist-credentials: false
 
@@ -101,22 +101,6 @@ jobs:
             --work-dir "$RUNNER_TEMP/palomar-render" \
             --output "$RUNNER_TEMP/palomar-render/report.json"
 
-      - name: Prefetch pinned ProofWidgets release for sandboxed cache discovery
-        if: steps.prepare.outputs.ready == 'true'
-        run: |
-          set -euo pipefail
-          proofwidgets_dir="$RUNNER_TEMP/palomar-render/workspace/.lake/packages/proofwidgets/.lake"
-          mkdir -p "$proofwidgets_dir"
-          archive="$proofwidgets_dir/ProofWidgets4.tar.gz"
-          curl --fail --location --proto '=https' --tlsv1.2 \
-            --output "$archive" \
-            https://github.com/leanprover-community/ProofWidgets4/releases/download/v0.0.87/ProofWidgets4.tar.gz
-          echo "ce3f6cd33c49b0b6e177cb2aba77be3a39988db0d6bec9dd6119413e260ac725  $archive" \
-            | sha256sum --check
-          cat > "$archive.trace" <<'JSON'
-          {"synthetic":false,"schemaVersion":"2025-09-10","outputs":null,"log":[{"message":".> curl -s -S -f -o ProofWidgets4.tar.gz -L https://github.com/leanprover-community/ProofWidgets4/releases/download/v0.0.87/ProofWidgets4.tar.gz","level":"trace"}],"inputs":[],"depHash":"cc5cfb8ba8defa4f"}
-          JSON
-
       - name: Install pinned elan
         if: steps.prepare.outputs.ready == 'true'
         run: |
@@ -153,7 +137,7 @@ jobs:
             --work-dir "$RUNNER_TEMP/palomar-render" \
             --output "$RUNNER_TEMP/palomar-render/report.json" \
             --landrun "$(go env GOPATH)/bin/landrun" \
-            --renderer-commit a013555a88a0fc9ec910a09ea833dc9cc338db35 \
+            --renderer-commit 56689ef65c4e97dcfa31b3c166f492337fb4976b \
             --landrun-commit 811cfff51ceaf3d9843708aa6d22e9b84ccac8b4 \
             --workflow-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
