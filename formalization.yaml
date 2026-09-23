@@ -120,9 +120,10 @@ automation:
       models: ["gpt-6-astra"]
       framework: "Codex"
       tool_setup: >-
-        AI-assisted theorem transfer, Lean proof engineering, provenance and
-        literature review, package checks, and preparation of pinned Palomar
-        renderer and mechanical-verification workflows.
+        AI-assisted Lean path-descent proof engineering, equivalence and
+        naturality proofs, provenance and literature review, package checks,
+        and preparation of pinned Palomar renderer and mechanical-verification
+        workflows.
       cost:
         wall_time: "not tracked"
         spend_usd: "subscription-based"
@@ -155,10 +156,12 @@ fidelity:
     unlike a based fundamental-group statement. Mathlib represents paths on
     the unit interval and endpoint-preserving homotopy; the proof identifies
     these path classes with the directed path classes for the indiscrete
-    preorder. The argument explicitly builds on the directed theorem by
-    Basold, Bruin, and Lawson. It does not claim a new mathematical theorem,
-    reproduce the earlier computational-path proof, or claim an independent
-    proof of the directed result.
+    preorder. Its interval-subdivision and homotopy-grid helpers are adapted
+    from the directed-topology formalization by Basold, Bruin, and Lawson; the
+    selected proof constructs the descent universal property and does not
+    invoke their packaged directed theorem. It does not claim a new
+    mathematical theorem, reproduce the earlier computational-path proof, or
+    claim independent authorship of the helper infrastructure.
 
 review:
   status: "self-assessed"
@@ -181,7 +184,8 @@ alignment:
 
 acknowledgements: >-
   Ronald Brown for the groupoid formulation of van Kampen's theorem; Henning
-  Basold, Peter Bruin, and Dominique Lawson for the directed van Kampen
-  formalization used as an explicit dependency; the Mathlib contributors;
+  Basold, Peter Bruin, and Dominique Lawson for the attributed path-descent
+  and homotopy-grid infrastructure adapted from their directed-topology
+  formalization; the Mathlib contributors;
   Arthur Freitas Ramos for human authorship and maintenance; and the Palomar,
   Comparator, Lean4Export, Landrun, and NanoDa projects for verification tools.
