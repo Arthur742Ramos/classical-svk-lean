@@ -58,11 +58,12 @@ Palomar entry.
 
 ## Status
 
-The previously frozen candidate `856159930dbdaa37aaa60978e76274cb1e84e96c`
-is historical: its selected proof invoked the packaged directed Van Kampen
-theorem and did not meet the direct-descent proof scope now used here. The
-current source instead assembles the universal property from the attributed
-path-subdivision and homotopy-grid construction. Its replacement candidate
-will be named explicitly in [VERIFICATION.md](VERIFICATION.md) after the exact
-pinned renderer and mechanical replay complete. No Palomar intake or
-registration has been performed.
+The frozen candidate is commit
+`fbbcc347d3b544ef9b72ed89d15345fc7c75b5fc` in
+[`classical-svk-lean`](https://github.com/Arthur742Ramos/classical-svk-lean).
+It passed the exact pinned Palomar renderer and mechanical replay; the exact
+candidate SHA, Challenge hash, reports, and gate details are recorded in
+[VERIFICATION.md](VERIFICATION.md). The earlier candidate
+`856159930dbdaa37aaa60978e76274cb1e84e96c` is historical because its selected
+proof invoked the packaged directed Van Kampen theorem. No Palomar intake,
+editorial acceptance, or registration is claimed.

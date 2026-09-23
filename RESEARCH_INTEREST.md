@@ -46,11 +46,11 @@ many pieces lying in one member of the cover. Refinements and reparametrizations
 do not change the resulting composite, and subdividing a path homotopy into
 small rectangles proves that homotopic paths have the same image. The selected
 Lean proof assembles this descent functor and its uniqueness directly from
-these path and homotopy constructions; it does not invoke the imported
-`directed_van_kampen` theorem. The interval and square subdivision lemmas are
-adapted from the cited directed-topology formalization, so this is not a claim
-of independent authorship of that helper infrastructure or of a new
-topological theorem.
+these path and homotopy constructions; it does not invoke the packaged
+`DirectedVanKampen.directed_van_kampen` theorem. The interval and square
+subdivision lemmas are adapted from the cited directed-topology formalization,
+so this is not a claim of independent authorship of that helper infrastructure
+or of a new topological theorem.
 
 The result is distinct in scope from the earlier computational-path SVK
 formalization: that development proves based equivalences and presentation
