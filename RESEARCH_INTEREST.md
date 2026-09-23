@@ -35,12 +35,22 @@ multiple path components; the groupoid formulation preserves it.
 ## Formalization contribution and limits
 
 Mathlib provides the ordinary fundamental groupoid but this package supplies
-the open-cover pushout theorem. The proof links that API to the existing
-formalized directed van Kampen theorem: the indiscrete preorder makes every
-continuous path directed, and the package proves that the resulting directed
-fundamental category is naturally equivalent to Mathlib's path groupoid.
-This is a formal bridge and transfer of an established theorem, not a new
-topological theorem and not an independent proof of the directed theorem.
+the open-cover pushout theorem. The proof uses continuous paths and
+endpoint-preserving path homotopies. The indiscrete preorder makes every path
+directed, and the package proves that the resulting path category is naturally
+equivalent to Mathlib's path groupoid.
+
+For the categorical universal property, compatible functors on the two open
+pieces are extended to the whole space by subdividing each path into finitely
+many pieces lying in one member of the cover. Refinements and reparametrizations
+do not change the resulting composite, and subdividing a path homotopy into
+small rectangles proves that homotopic paths have the same image. The selected
+Lean proof assembles this descent functor and its uniqueness directly from
+these path and homotopy constructions; it does not invoke the imported
+`directed_van_kampen` theorem. The interval and square subdivision lemmas are
+adapted from the cited directed-topology formalization, so this is not a claim
+of independent authorship of that helper infrastructure or of a new
+topological theorem.
 
 The result is distinct in scope from the earlier computational-path SVK
 formalization: that development proves based equivalences and presentation
@@ -55,12 +65,13 @@ It can support component-sensitive computations and future formalizations
 that decompose spaces into open pieces. No application theorem is claimed in
 this entry.
 
-The proof dependency is the Lean formalization by Basold, Bruin, and Lawson,
-“The Directed Van Kampen Theorem in Lean,” ITP 2024:
-[paper and artifact](https://doi.org/10.4230/LIPIcs.ITP.2024.8). That paper
-formalizes the directed fundamental-category theorem. This project specializes
-its directedness structure to the universal preorder and translates the
-result to Mathlib's ordinary fundamental groupoid.
+The formal path-cover and homotopy-grid infrastructure is adapted from Basold,
+Bruin, and Lawson, “The Directed Van Kampen Theorem in Lean,” ITP 2024:
+[paper and artifact](https://doi.org/10.4230/LIPIcs.ITP.2024.8). That project
+formalizes directed path subdivision and homotopy arguments. This project
+specializes the path condition to the universal preorder, proves the
+comparison with Mathlib's ordinary path quotient, and constructs the target
+pushout property from the constructive descent lemmas.
 
 No novelty, priority, source-author endorsement, independent human proof
 review, or Palomar editorial acceptance is claimed. Palomar editors remain

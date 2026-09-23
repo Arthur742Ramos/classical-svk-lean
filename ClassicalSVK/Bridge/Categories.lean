@@ -1,4 +1,5 @@
-import Lean4.directed_van_kampen
+import Lean4.dTop
+import Lean4.dihomotopy_to_path_dihomotopy
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic

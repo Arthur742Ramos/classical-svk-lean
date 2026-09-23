@@ -8,9 +8,11 @@ listed as an author.
 The selected theorem states that the fundamental groupoids of the actual
 topological subspaces in an arbitrary open two-set cover form a pushout in
 Cat. It uses Mathlib's ordinary continuous-path fundamental groupoid. The
-proof builds on the pinned directed van Kampen theorem and adds the
-universal-preorder equivalence and naturality argument that transfer it to the
-classical topological statement.
+proof reuses the attributed interval-subdivision and homotopy-grid helper
+construction from the pinned directed-topology project, specialized via an
+explicit equivalence for the indiscrete preorder. It directly constructs and
+assembles the descent universal property; it does not invoke that project's
+packaged directed Van Kampen theorem.
 
 The prior computational-path formalization is disclosed in PROVENANCE.md. Its
 source and proof terms are not reused here. The earlier based-group

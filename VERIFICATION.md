@@ -6,15 +6,17 @@ verification, independent review, and any Palomar intake as distinct gates.
 ## Current artifact
 
 - Repository: <https://github.com/Arthur742Ramos/classical-svk-lean>
-- Frozen candidate commit: `856159930dbdaa37aaa60978e76274cb1e84e96c`
-  (<https://github.com/Arthur742Ramos/classical-svk-lean/tree/856159930dbdaa37aaa60978e76274cb1e84e96c>).
-- Candidate `Challenge.lean` SHA-256: `5832240b656012cdb39a69c25cf4335221d08d95ec29f2393c9a07fd2f4a3038`.
-- This record can be newer than the frozen candidate because its updates are
-  documentation-only. A later default-branch head is not implicitly a new
-  submission artifact.
+- The formerly frozen candidate `856159930dbdaa37aaa60978e76274cb1e84e96c`
+  is historical because its selected proof invoked the packaged
+  `DirectedVanKampen.directed_van_kampen` theorem. It is not the replacement
+  candidate.
+- The replacement source directly constructs the descent functor and pushout
+  universal property from the attributed path-subdivision and homotopy-grid
+  helpers. Its exact candidate SHA and hosted gate results will be recorded
+  here after pinned replay.
 - Palomar intake or registration: none.
 
-The candidate's mechanical report contains a generated `submission_id`
+The historical candidate's mechanical report contains a generated `submission_id`
 (`5b2a1735d6c8`). It is the deterministic request identifier derived from the
 workflow run ID, not a Palomar registry ID, intake receipt, or authorization to
 register the result. The report also has `existing_id: null`.
@@ -49,25 +51,26 @@ canceled while still in preflight:
 - Canceled historical mechanical run:
   <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35907730069>
 
-None of these earlier receipts establishes a gate for the frozen candidate.
+None of these earlier receipts establishes a gate for the replacement
+candidate.
 
-## Gates
+## Historical candidate gates
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Full candidate proof and package build | Passed locally and in hosted preflight | `lake build Challenge Solution` succeeded with Lean 4.28.0 and Mathlib commit `8f9d9cff6bd728b17a24e163c9402775d9e6a365` (3,205 local build jobs); hosted preflight passed on the exact candidate SHA. |
+| Full historical candidate proof and package build | Passed, historical only | The prior commit built with Lean 4.28.0 and Mathlib commit `8f9d9cff6bd728b17a24e163c9402775d9e6a365`; this does not verify the replacement proof. |
 | Challenge/solution statement match and Mathlib-only Challenge boundary | Passed | `python scripts/check-package.py` and the hosted preflight passed; Challenge imports Mathlib only and agrees with the selected theorem. |
 | Closed Challenge compiled-body audit | Passed | `lake env lean scripts/check-closed-statement.lean` and hosted preflight passed; the audit checked seven compiler-generated proof helpers and found no candidate-defined mathematical data. |
 | Axiom and proof-hole audit | Passed | `python scripts/check-axioms.py` and hosted preflight passed; the theorem uses only `propext`, `Classical.choice`, and `Quot.sound`, and `Solution.lean` has no proof-hole token. |
-| Schema, source hashes, and structured provenance | Passed | Package and provenance scripts passed locally and in hosted preflight, including remote hash comparisons for all 20 compatibility-ported source files. |
-| Pinned Palomar renderer with Linux Landrun core-notation audit | Passed for exact candidate SHA | [Renderer run 35908998653](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35908998653); report status `pass`, renderer `56689ef65c4e97dcfa31b3c166f492337fb4976b`, Landrun `811cfff51ceaf3d9843708aa6d22e9b84ccac8b4`. |
-| Pinned Comparator, NanoDa, and Palomar mechanical replay | Passed for exact candidate SHA | [Mechanical run 35909014062](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35909014062); stage `complete`, status `pass`, no warnings. It does not create an intake or registration. |
+| Schema, source hashes, and structured provenance | Passed, historical only | The prior candidate's source-port checks passed. |
+| Pinned Palomar renderer with Linux Landrun core-notation audit | Passed for historical SHA only | [Renderer run 35908998653](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35908998653); it does not verify the replacement candidate. |
+| Pinned Comparator, NanoDa, and Palomar mechanical replay | Passed for historical SHA only | [Mechanical run 35909014062](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35909014062); it does not verify the replacement candidate. |
 | Independent mathematical review | Not performed | No independent reviewer is claimed. |
-| Palomar editorial acceptance, intake, or registration | Not performed | Mechanical verification is complete; no Palomar entry has been submitted or registered. |
+| Palomar editorial acceptance, intake, or registration | Not performed | These historical mechanical checks did not submit or register a Palomar entry. |
 
-The directed-topology source commit is
+The historical candidate used directed-topology source commit
 `009529606c66d37ef93b4b81b8587f71ce4d2c56`; Mathlib is pinned to
 `8f9d9cff6bd728b17a24e163c9402775d9e6a365`. Both hosted reports name the
-frozen candidate SHA above. The theorem is the ordinary Mathlib continuous-path
+historical candidate `856159930dbdaa37aaa60978e76274cb1e84e96c`. The theorem is the ordinary Mathlib continuous-path
 groupoid pushout; its proof transfers the established directed theorem through
 the universal-preorder equivalence described in [RESEARCH_INTEREST.md](RESEARCH_INTEREST.md).

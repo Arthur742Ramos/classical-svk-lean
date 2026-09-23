@@ -14,18 +14,24 @@ continuous-path groupoids. The statement has no chosen basepoint, path
 connectedness assumptions, or separation assumptions; it retains every point
 as an object and therefore also handles a disconnected intersection.
 
-The proof gives each space the indiscrete preorder. Under that preorder every
-continuous path is directed, and every endpoint-preserving path homotopy is a
-directed homotopy. The project proves inverse equivalences between the
-directed fundamental category and Mathlib's fundamental groupoid, proves
-naturality for inclusions, and transports the pinned directed van Kampen
-pushout to the ordinary topological groupoid.
+The proof uses Mathlib's continuous paths and endpoint-preserving homotopies.
+It gives each space the indiscrete preorder, so the auxiliary path and
+homotopy types coincide with the ordinary topological ones; the project proves
+inverse equivalences and their naturality for inclusions. For the pushout, it
+constructs the descent functor from compatible functors on `U` and `V`: paths
+are subdivided into pieces lying in the cover, and homotopies are subdivided
+into small rectangles. The proof assembles the universal property from these
+constructions; it does not invoke the packaged directed van Kampen theorem as
+a black box.
 
-This formalization builds on the directed van Kampen theorem by Basold, Bruin,
-and Lawson. It does not claim that the classical theorem is new, or that this
-is an independent proof of the directed theorem. The precise relationship and
-the comparison with the earlier computational-path formalization are recorded
-in [PROVENANCE.md](PROVENANCE.md) and [RESEARCH_INTEREST.md](RESEARCH_INTEREST.md).
+The interval-subdivision and homotopy-grid infrastructure is adapted from the
+directed-topology formalization by Basold, Bruin, and Lawson. The selected
+proof uses those constructive path and homotopy lemmas to build its own
+descent functor and universal property; it makes no claim to a new topological
+theorem or to independent authorship of the helper infrastructure. The exact
+relationship and comparison with the earlier computational-path
+formalization are recorded in [PROVENANCE.md](PROVENANCE.md) and
+[RESEARCH_INTEREST.md](RESEARCH_INTEREST.md).
 
 ## Build and audit
 
@@ -52,18 +58,11 @@ Palomar entry.
 
 ## Status
 
-The frozen Palomar candidate is commit
-`856159930dbdaa37aaa60978e76274cb1e84e96c` in
-[`classical-svk-lean`](https://github.com/Arthur742Ramos/classical-svk-lean).
-It passed the exact pinned Palomar renderer and mechanical replay; the run
-records and superseded candidates are listed in [VERIFICATION.md](VERIFICATION.md).
-The README and verification record may be updated in later documentation-only
-commits; submit the named candidate SHA rather than treating a newer branch
-head as a verified artifact.
-
-The renderer passed on Linux under Landrun, including the core-notation audit.
-The mechanical replay passed Comparator, NanoDa, and the unmodified Palomar
-verifier. The proof uses the established directed van Kampen formalization via
-a proved equivalence with Mathlib's ordinary continuous-path groupoid; it is
-not an independent proof of the directed theorem. There is no independent
-human review or Palomar editorial decision, intake, or registration claimed.
+The previously frozen candidate `856159930dbdaa37aaa60978e76274cb1e84e96c`
+is historical: its selected proof invoked the packaged directed Van Kampen
+theorem and did not meet the direct-descent proof scope now used here. The
+current source instead assembles the universal property from the attributed
+path-subdivision and homotopy-grid construction. Its replacement candidate
+will be named explicitly in [VERIFICATION.md](VERIFICATION.md) after the exact
+pinned renderer and mechanical replay complete. No Palomar intake or
+registration has been performed.

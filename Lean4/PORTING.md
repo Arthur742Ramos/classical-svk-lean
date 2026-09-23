@@ -32,10 +32,19 @@ The port updates old Lean 4.6 / Mathlib APIs for Lean 4.28 and Mathlib commit
 - `Lean4/SplitPath/split_path.lean`
 - `Lean4/SplitPath/split_properties.lean`
 
+The path subdivision and homotopy-grid construction formerly grouped with the
+final directed theorem in `Lean4/directed_van_kampen.lean` is extracted into
+`Lean4/path_descent_helpers.lean`. The helper file is attributed to that exact
+upstream source and commit in `vendor-manifest.json`; it does not contain or
+invoke the packaged directed Van Kampen theorem.
+
 These changes adapt the source to current Lean and Mathlib declarations. The
-mathematical directed van Kampen result used here remains the theorem in
-`Lean4/directed_van_kampen.lean`; it is an explicit inherited dependency. The
-new result is the equivalence between that directed category for the
-indiscrete preorder and Mathlib's ordinary continuous-path groupoid, together
-with its naturality and the transfer of the pushout. This is not an
-independent proof of the directed theorem.
+selected result reuses the path-cover subdivision and homotopy-grid
+construction in the `DirectedVanKampen.PushoutFunctor` namespace of
+`Lean4/path_descent_helpers.lean`. It does not invoke the packaged
+`directed_van_kampen` theorem: `ClassicalSVK.Pushout` directly assembles the
+universal property from the descent functor and its factorization and
+uniqueness lemmas. The indiscrete-preorder equivalence identifies the source's
+auxiliary paths and homotopies with Mathlib's ordinary continuous-path
+groupoid. The reused construction is fully attributed in `PROVENANCE.md` and
+`formalization.yaml`.

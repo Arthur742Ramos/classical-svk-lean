@@ -84,7 +84,14 @@
       "path": "Lean4/directed_van_kampen.lean",
       "source_path": "Lean4/directed_van_kampen.lean",
       "upstream_sha256": "2a501bb13b39f96beab984afcc900a2fb8627f56805b61058ecd6b677c80158d",
-      "vendored_sha256": "0adf2911c33d22dd1e62f6cbc54ccd413ee96b82accfe13364e2ed22e685d7df"
+      "vendored_sha256": "105488a71de9cac99e6f644aae7bed7e5d25f81faccc3e710a68e6c0a46fc2cd"
+    },
+    {
+      "path": "Lean4/path_descent_helpers.lean",
+      "source_path": "Lean4/directed_van_kampen.lean",
+      "upstream_sha256": "2a501bb13b39f96beab984afcc900a2fb8627f56805b61058ecd6b677c80158d",
+      "vendored_sha256": "65bb3b1d0257e911c9ef07d565ebf1b0fa713d00d36b3584ffabacbe4eac95c8",
+      "kind": "extracted-helper"
     },
     {
       "path": "Lean4/dTop.lean",

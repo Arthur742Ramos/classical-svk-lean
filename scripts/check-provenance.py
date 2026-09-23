@@ -67,6 +67,29 @@ def main() -> None:
     imports = re.findall(r"^import\s+(.+)$", challenge, re.MULTILINE)
     if not imports or any(not item.startswith("Mathlib.") for item in imports):
         raise SystemExit("Challenge import boundary is not Mathlib-only")
+
+    # The classical result may reuse the constructive subdivision helpers,
+    # but its import graph must not contain the packaged directed theorem.
+    pending = ["Solution"]
+    visited = set()
+    while pending:
+        module = pending.pop()
+        if module in visited:
+            continue
+        visited.add(module)
+        if module == "Lean4.directed_van_kampen":
+            raise SystemExit("selected theorem import graph reaches the packaged directed theorem")
+        local_file = ROOT.joinpath(*module.split(".")).with_suffix(".lean")
+        if local_file.is_file():
+            module_imports = re.findall(
+                r"^import\s+(.+)$", local_file.read_text(encoding="utf-8"), re.MULTILINE
+            )
+            pending.extend(module_imports)
+    selected_sources = [ROOT / "Solution.lean", *(ROOT / "ClassicalSVK").rglob("*.lean")]
+    for path in selected_sources:
+        if "DirectedVanKampen.directed_van_kampen" in path.read_text(encoding="utf-8"):
+            raise SystemExit("selected proof invokes the packaged directed theorem: " + str(path.relative_to(ROOT)))
+
     all_lean = "\n".join(
         path.read_text(encoding="utf-8")
         for path in ROOT.rglob("*.lean")
@@ -85,6 +108,8 @@ def main() -> None:
         raise SystemExit("upstream MIT license notice is missing from the vendored source")
     porting = (ROOT / "Lean4" / "PORTING.md").read_text(encoding="utf-8")
     changed = []
+    compatibility_ports = []
+    extracted_helpers = []
     seen = set()
     source_files = source_manifest.get("files", [])
     for item in source_files:
@@ -100,7 +125,16 @@ def main() -> None:
             raise SystemExit("upstream source hash is malformed: " + relative)
         if upstream != item["vendored_sha256"]:
             changed.append(relative)
-            if f"`{relative}`" not in porting:
+            kind = item.get("kind", "compatibility-port")
+            if kind == "extracted-helper":
+                extracted_helpers.append(relative)
+                if item.get("source_path") != "Lean4/directed_van_kampen.lean":
+                    raise SystemExit("extracted path helper has an unexpected upstream source: " + relative)
+                if f"`{relative}`" not in porting:
+                    raise SystemExit("porting record omits extracted upstream helper: " + relative)
+            else:
+                compatibility_ports.append(relative)
+            if kind != "extracted-helper" and f"`{relative}`" not in porting:
                 raise SystemExit("porting record omits changed upstream file: " + relative)
     with ThreadPoolExecutor(max_workers=8) as pool:
         remote_hashes = list(pool.map(lambda item: upstream_sha256(item, DIRECTED_SHA), source_files))
@@ -109,9 +143,14 @@ def main() -> None:
             raise SystemExit("vendored source baseline does not match the immutable upstream file: " + item["source_path"])
     if not any(item.get("path") == "Lean4/directed_van_kampen.lean" for item in source_manifest.get("files", [])):
         raise SystemExit("vendored-source manifest omits the imported theorem module")
-    if len(changed) != 20:
-        raise SystemExit(f"unexpected number of ported upstream files: {len(changed)}")
-    print(f"Structured provenance and exact vendored-source hashes passed ({len(changed)} compatibility ports).")
+    if len(compatibility_ports) != 20:
+        raise SystemExit(f"unexpected number of ported upstream files: {len(compatibility_ports)}")
+    if extracted_helpers != ["Lean4/path_descent_helpers.lean"]:
+        raise SystemExit("expected exactly one extracted path-descent helper module")
+    print(
+        "Structured provenance and exact vendored-source hashes passed "
+        f"({len(compatibility_ports)} compatibility ports, {len(extracted_helpers)} extracted helper)."
+    )
 
 
 if __name__ == "__main__":

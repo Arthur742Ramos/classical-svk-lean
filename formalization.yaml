@@ -8,10 +8,12 @@ project:
     inclusion-induced square of Mathlib's ordinary continuous-path
     fundamental groupoids for U ∩ V, U, V, and X is a pushout in Cat. The
     statement retains all points as objects and assumes no basepoint,
-    connectedness, or separation conditions. The proof transfers the pinned
-    directed van Kampen pushout through a natural equivalence between the
-    directed fundamental category for the indiscrete preorder and Mathlib's
-    ordinary fundamental groupoid.
+    connectedness, or separation conditions. The proof uses continuous paths
+    and endpoint-preserving homotopies, specializes an auxiliary preorder to
+    the indiscrete relation, and proves a natural equivalence with Mathlib's
+    ordinary fundamental groupoid. It constructs the categorical descent
+    functor by path subdivision and proves homotopy invariance by a square
+    subdivision; it does not invoke the imported directed van Kampen theorem.
   authors:
     - "Arthur Freitas Ramos"
   responsible_maintainers:
@@ -44,14 +46,16 @@ sources:
       - "Dominique Lawson"
     id: "10.4230/LIPIcs.ITP.2024.8"
     type: "conference paper and formalization"
-    location: "The directed fundamental-category pushout theorem"
+    location: "Path-subdivision and homotopy-grid construction for the directed fundamental-category pushout"
     relationship: "adapts"
     note: >-
-      The proof uses the formalized directed van Kampen theorem as an explicit
-      lemma, specializes its directedness structure to the indiscrete preorder,
-      and transports the result to Mathlib's ordinary fundamental groupoid.
-      The directed theorem is attributed to its authors and is not claimed as
-      new here.
+      The selected proof specializes the universal preorder to identify its
+      auxiliary paths and homotopies with ordinary topological ones, reuses
+      the source's constructive interval- and square-subdivision lemmas, and
+      directly assembles the descent functor and pushout universal property.
+      It does not call the imported directed_van_kampen theorem. The helper
+      infrastructure is attributed to its authors; the classical theorem is
+      known and is not claimed as new here.
     license: "CC-BY-4.0"
     author_endorsement: "not-contacted"
 
@@ -62,12 +66,15 @@ related_formalizations:
       The source project is Dominique-Lawson/Directed-Topology-Lean-4 at full
       commit 009529606c66d37ef93b4b81b8587f71ce4d2c56. Its Lean4/ module tree
       is vendored and compatibility-ported into this repository; the exact
-      upstream path Lean4/directed_van_kampen.lean contains the inherited
-      directed pushout theorem, and Lean4/vendor-manifest.json records source
-      and port hashes. The upstream MIT notice is preserved in
-      Lean4/LICENSE.md. The selected result builds on that theorem; the new
-      work here is the universal-preorder equivalence and naturality bridge
-      that transfers it to Mathlib's ordinary path groupoid.
+      upstream path Lean4/directed_van_kampen.lean contains the
+      DirectedVanKampen.PushoutFunctor path-subdivision and homotopy-grid
+      lemmas extracted as Lean4/path_descent_helpers.lean and reused here;
+      Lean4/vendor-manifest.json records source and port hashes. The upstream
+      MIT notice is preserved in Lean4/LICENSE.md.
+      The selected proof directly constructs and assembles the descent
+      functor; it does not invoke DirectedVanKampen.directed_van_kampen. The
+      result also uses the universal-preorder equivalence and naturality
+      bridge to Mathlib's ordinary path groupoid.
   - id: "https://github.com/leanprover-community/mathlib4/tree/8f9d9cff6bd728b17a24e163c9402775d9e6a365"
     relationship: "builds-on"
     note: >-

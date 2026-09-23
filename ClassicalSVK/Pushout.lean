@@ -1,3 +1,4 @@
+import Lean4.path_descent_helpers
 import ClassicalSVK.Bridge.Iso
 
 open CategoryTheory
@@ -125,9 +126,25 @@ theorem classicalOpenCoverPushout
     apply Cat.ext
     simpa [pToD_X_cat, dToP_X_cat, pToD_X, dToP_X, Grpd.forgetToCat, Cat.of] using
       (classicalToDirected_comp_directedToClassical (X := X))
-  have hdir : IsPushout dI₁ dI₂ dJ₁ dJ₂ := by
-    simpa [dI₁, dI₂, dJ₁, dJ₂] using
-      (DirectedVanKampen.directed_van_kampen (X := dTopCat.of X) (X₁ := U) (X₂ := V) (X₁_open := hU) (X₂_open := hV) (hX := hUV))
+  have hpathDescent : IsPushout dI₁ dI₂ dJ₁ dJ₂ := by
+    -- Construct the descent functor directly. Its action on each path is
+    -- defined by an open-cover subdivision; independence of the subdivision
+    -- and of the path-homotopy representative is established by the interval
+    -- and square subdivision lemmas in `PushoutFunctor`.
+    apply PushoutAlternative.isPushout_alternative
+    · rw [← Functor.map_comp, ← Functor.map_comp]
+      change FundamentalCategory.fundamentalCategoryFunctor.map (dI0_1 ≫ dJ0_1) =
+        FundamentalCategory.fundamentalCategoryFunctor.map (dI0_2 ≫ dJ0_2)
+      congr 1
+    intro C F₁ F₂ h_comm
+    let descent := DirectedVanKampen.PushoutFunctor.Functor hUV hU hV h_comm
+    use descent
+    constructor
+    constructor
+    · exact DirectedVanKampen.PushoutFunctor.functor_comp_left hUV hU hV h_comm
+    · exact DirectedVanKampen.PushoutFunctor.functor_comp_right hUV hU hV h_comm
+    · rintro F' ⟨h₁, h₂⟩
+      exact DirectedVanKampen.PushoutFunctor.functor_uniq hUV hU hV h_comm F' h₁ h₂
   have hcomm : cI₁ ≫ cJ₁ = cI₂ ≫ cJ₂ := by
     calc
       cI₁ ≫ cJ₁ = (pToD_I_cat ≫ dToP_I_cat) ≫ (cI₁ ≫ cJ₁) := by
@@ -139,7 +156,7 @@ theorem classicalOpenCoverPushout
       _ = pToD_I_cat ≫ (dI₁ ≫ (dJ₁ ≫ dToP_X_cat)) := by rw [← hj₁_nat]
       _ = pToD_I_cat ≫ ((dI₁ ≫ dJ₁) ≫ dToP_X_cat) := by simp [Category.assoc]
       _ = pToD_I_cat ≫ ((dI₂ ≫ dJ₂) ≫ dToP_X_cat) := by
-        exact congrArg (fun f => pToD_I_cat ≫ f ≫ dToP_X_cat) hdir.w
+        exact congrArg (fun f => pToD_I_cat ≫ f ≫ dToP_X_cat) hpathDescent.w
       _ = pToD_I_cat ≫ (dI₂ ≫ (dJ₂ ≫ dToP_X_cat)) := by simp [Category.assoc]
       _ = pToD_I_cat ≫ (dI₂ ≫ (dToP_V_cat ≫ cJ₂)) := by rw [hj₂_nat]
       _ = pToD_I_cat ≫ ((dI₂ ≫ dToP_V_cat) ≫ cJ₂) := by simp [Category.assoc]
@@ -161,13 +178,13 @@ theorem classicalOpenCoverPushout
         _ = dI₂ ≫ (dToP_V_cat ≫ s.inr) := by simp [Category.assoc])
   let liftDesc : ∀ s : PushoutCocone cI₁ cI₂,
       Grpd.forgetToCat.obj (FundamentalGroupoid.fundamentalGroupoidFunctor.obj (TopCat.of X)) ⟶ s.pt := fun s => by
-    exact pToD_X_cat ≫ PushoutCocone.IsColimit.desc hdir.isColimit
+    exact pToD_X_cat ≫ PushoutCocone.IsColimit.desc hpathDescent.isColimit
       (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
   have hcolim : IsColimit cP := by
     change IsColimit (PushoutCocone.mk cJ₁ cJ₂ hcomm)
     refine PushoutCocone.IsColimit.mk (f := cI₁) (g := cI₂) (inl := cJ₁) (inr := cJ₂) hcomm liftDesc ?_ ?_ ?_
     · intro s
-      let desc := PushoutCocone.IsColimit.desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
+      let desc := PushoutCocone.IsColimit.desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
       calc
         cJ₁ ≫ liftDesc s = cJ₁ ≫ (pToD_X_cat ≫ desc) := rfl
         _ = (cJ₁ ≫ pToD_X_cat) ≫ desc := by simp [Category.assoc]
@@ -175,11 +192,11 @@ theorem classicalOpenCoverPushout
         _ = pToD_U_cat ≫ (dJ₁ ≫ desc) := by simp [Category.assoc]
         _ = pToD_U_cat ≫ ((toDirectedCocone s).inl) := by
           exact congrArg (fun f => pToD_U_cat ≫ f)
-            (PushoutCocone.IsColimit.inl_desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition)
+            (PushoutCocone.IsColimit.inl_desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition)
         _ = (pToD_U_cat ≫ dToP_U_cat) ≫ s.inl := by simp [toDirectedCocone, Category.assoc]
         _ = s.inl := by rw [hIsoU]; simp
     · intro s
-      let desc := PushoutCocone.IsColimit.desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
+      let desc := PushoutCocone.IsColimit.desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
       calc
         cJ₂ ≫ liftDesc s = cJ₂ ≫ (pToD_X_cat ≫ desc) := rfl
         _ = (cJ₂ ≫ pToD_X_cat) ≫ desc := by simp [Category.assoc]
@@ -187,11 +204,11 @@ theorem classicalOpenCoverPushout
         _ = pToD_V_cat ≫ (dJ₂ ≫ desc) := by simp [Category.assoc]
         _ = pToD_V_cat ≫ ((toDirectedCocone s).inr) := by
           exact congrArg (fun f => pToD_V_cat ≫ f)
-            (PushoutCocone.IsColimit.inr_desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition)
+            (PushoutCocone.IsColimit.inr_desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition)
         _ = (pToD_V_cat ≫ dToP_V_cat) ≫ s.inr := by simp [toDirectedCocone, Category.assoc]
         _ = s.inr := by rw [hIsoV]; simp
     · intro s m hm₁ hm₂
-      let desc := PushoutCocone.IsColimit.desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
+      let desc := PushoutCocone.IsColimit.desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition
       have hmap : dToP_X_cat ≫ m = desc := by
         have hleft : dJ₁ ≫ (dToP_X_cat ≫ m) = dJ₁ ≫ desc := by
           calc
@@ -200,7 +217,7 @@ theorem classicalOpenCoverPushout
             _ = dToP_U_cat ≫ (cJ₁ ≫ m) := by simp [Category.assoc]
             _ = dToP_U_cat ≫ s.inl := by exact congrArg (fun f => dToP_U_cat ≫ f) hm₁
             _ = dJ₁ ≫ desc := by
-              exact (PushoutCocone.IsColimit.inl_desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition).symm
+              exact (PushoutCocone.IsColimit.inl_desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition).symm
         have hright : dJ₂ ≫ (dToP_X_cat ≫ m) = dJ₂ ≫ desc := by
           calc
             dJ₂ ≫ (dToP_X_cat ≫ m) = (dJ₂ ≫ dToP_X_cat) ≫ m := by simp [Category.assoc]
@@ -208,8 +225,8 @@ theorem classicalOpenCoverPushout
             _ = dToP_V_cat ≫ (cJ₂ ≫ m) := by simp [Category.assoc]
             _ = dToP_V_cat ≫ s.inr := by exact congrArg (fun f => dToP_V_cat ≫ f) hm₂
             _ = dJ₂ ≫ desc := by
-              exact (PushoutCocone.IsColimit.inr_desc hdir.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition).symm
-        exact PushoutCocone.IsColimit.hom_ext hdir.isColimit hleft hright
+              exact (PushoutCocone.IsColimit.inr_desc hpathDescent.isColimit (toDirectedCocone s).inl (toDirectedCocone s).inr (toDirectedCocone s).condition).symm
+        exact PushoutCocone.IsColimit.hom_ext hpathDescent.isColimit hleft hright
       calc
         m = 𝟙 _ ≫ m := by simp
         _ = (pToD_X_cat ≫ dToP_X_cat) ≫ m := by rw [hIsoX]

@@ -16,28 +16,35 @@ groupoids for `U ∩ V`, `U`, `V`, and `X` is a categorical pushout whenever
 - Directed-Topology-Lean-4 is pinned as a source dependency to commit
   `009529606c66d37ef93b4b81b8587f71ce4d2c56`. Its `Lean4/` module tree and
   upstream root `Lean4.lean` are vendored and compatibility-ported here so the
-  package builds on Lean 4.28 and the selected Mathlib pin. The inherited
-  theorem is `Lean4.directed_van_kampen` in
-  `Lean4/directed_van_kampen.lean`; the supporting copied source paths and
-  their upstream and vendored SHA-256 hashes are recorded in
-  `Lean4/vendor-manifest.json`. The upstream MIT license and source README are
-  preserved in `Lean4/LICENSE.md` and `Lean4/README.md`. The ported source
-  files and API changes are listed in `Lean4/PORTING.md`.
+  package builds on Lean 4.28 and the selected Mathlib pin. The selected proof
+  reuses constructive interval-subdivision and homotopy-grid lemmas under
+  `DirectedVanKampen.PushoutFunctor` in the extracted
+  `Lean4/path_descent_helpers.lean`, sourced from upstream
+  `Lean4/directed_van_kampen.lean`. It does not invoke
+  `DirectedVanKampen.directed_van_kampen`. Instead, it directly assembles the
+  pushout universal property using the descent functor and its factorization
+  and uniqueness lemmas. Supporting copied source paths and their upstream
+  and vendored SHA-256 hashes are recorded in `Lean4/vendor-manifest.json`.
+  The upstream MIT license and source README are preserved in
+  `Lean4/LICENSE.md` and `Lean4/README.md`. Ported source files and API changes
+  are listed in `Lean4/PORTING.md`.
 - The new bridge is in `ClassicalSVK/Bridge/`. It gives every space the
   indiscrete preorder, constructs inverse equivalences between the directed
-  fundamental category and Mathlib's path groupoid, proves naturality, and
-  transports the inherited directed pushout. The directed theorem itself is
-  an explicit inherited result, not a newly proved or independently claimed
-  theorem here.
+  path category and Mathlib's path groupoid, and proves naturality. Since the
+  preorder is indiscrete, these objects are actual continuous paths and
+  endpoint-preserving homotopies. The open-cover result uses path subdivision
+  and homotopy-grid lemmas to construct its own descent functor.
 
 ## Related formalizations
 
 - The immutable source snapshot
   <https://github.com/Dominique-Lawson/Directed-Topology-Lean-4/tree/009529606c66d37ef93b4b81b8587f71ce4d2c56>
-  supplies the inherited theorem and supporting directed-path infrastructure.
-  Its upstream module path is `Lean4/directed_van_kampen.lean`. The selected
-  result builds on that theorem; the new result is its transfer to the
-  ordinary continuous-path fundamental groupoid.
+  supplies the constructive path subdivision, reparametrization, and
+  homotopy-grid infrastructure used in the proof. Its upstream module path is
+  `Lean4/directed_van_kampen.lean`; the copied helper source is extracted as
+  `Lean4/path_descent_helpers.lean`. The selected declaration directly
+  assembles the pushout universal property and does not call the source's final
+  `directed_van_kampen` theorem.
 - The immutable Mathlib snapshot
   <https://github.com/leanprover-community/mathlib4/tree/8f9d9cff6bd728b17a24e163c9402775d9e6a365>
   supplies the ordinary fundamental groupoid, topological subspaces, and
