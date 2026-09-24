@@ -1,6 +1,8 @@
 import Lean4.path_descent_helpers
 import ClassicalSVK.Bridge.Iso
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory
 open CategoryTheory.Limits
 open scoped unitInterval FundamentalCategory
@@ -13,13 +15,13 @@ theorem classicalOpenCoverPushout
     {X : Type u} [TopologicalSpace X] (U V : Set X)
     (hU : IsOpen U) (hV : IsOpen V) (hUV : U ∪ V = Set.univ) :
     let i₁ : TopCat.of (U ∩ V : Set X) ⟶ TopCat.of U :=
-      ⟨(fun x => (⟨x.1, x.2.1⟩ : U)),
+      TopCat.ofHom ⟨(fun x => (⟨x.1, x.2.1⟩ : U)),
         Continuous.subtype_mk continuous_subtype_val (fun x => x.2.1)⟩
     let i₂ : TopCat.of (U ∩ V : Set X) ⟶ TopCat.of V :=
-      ⟨(fun x => (⟨x.1, x.2.2⟩ : V)),
+      TopCat.ofHom ⟨(fun x => (⟨x.1, x.2.2⟩ : V)),
         Continuous.subtype_mk continuous_subtype_val (fun x => x.2.2)⟩
-    let j₁ : TopCat.of U ⟶ TopCat.of X := ⟨Subtype.val, continuous_subtype_val⟩
-    let j₂ : TopCat.of V ⟶ TopCat.of X := ⟨Subtype.val, continuous_subtype_val⟩
+    let j₁ : TopCat.of U ⟶ TopCat.of X := TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
+    let j₂ : TopCat.of V ⟶ TopCat.of X := TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
     IsPushout
       (Grpd.forgetToCat.map (FundamentalGroupoid.fundamentalGroupoidFunctor.map i₁))
       (Grpd.forgetToCat.map (FundamentalGroupoid.fundamentalGroupoidFunctor.map i₂))
@@ -29,13 +31,13 @@ theorem classicalOpenCoverPushout
   letI : Preorder X := universalPreorder X
   letI : DirectedSpace X := DirectedSpace.Preorder X
   let i₁ : TopCat.of (U ∩ V : Set X) ⟶ TopCat.of U :=
-    ⟨(fun x => (⟨x.1, x.2.1⟩ : U)),
+    TopCat.ofHom ⟨(fun x => (⟨x.1, x.2.1⟩ : U)),
       Continuous.subtype_mk continuous_subtype_val (fun x => x.2.1)⟩
   let i₂ : TopCat.of (U ∩ V : Set X) ⟶ TopCat.of V :=
-    ⟨(fun x => (⟨x.1, x.2.2⟩ : V)),
+    TopCat.ofHom ⟨(fun x => (⟨x.1, x.2.2⟩ : V)),
       Continuous.subtype_mk continuous_subtype_val (fun x => x.2.2)⟩
-  let j₁ : TopCat.of U ⟶ TopCat.of X := ⟨Subtype.val, continuous_subtype_val⟩
-  let j₂ : TopCat.of V ⟶ TopCat.of X := ⟨Subtype.val, continuous_subtype_val⟩
+  let j₁ : TopCat.of U ⟶ TopCat.of X := TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
+  let j₂ : TopCat.of V ⟶ TopCat.of X := TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
   let dI0_1 : dTopCat.of (U ∩ V : Set X) ⟶ dTopCat.of (U : Set X) :=
     dTopCat.DirectedSubsetHom (X := dTopCat.of X) (Y₀ := U ∩ V) (Y₁ := U) Set.inter_subset_left
   let dI0_2 : dTopCat.of (U ∩ V : Set X) ⟶ dTopCat.of (V : Set X) :=
@@ -112,20 +114,17 @@ theorem classicalOpenCoverPushout
     simpa only [← hj₂] using classicalToDirected_naturality dJ0_2
   have hIsoI : pToD_I_cat ≫ dToP_I_cat = 𝟙 _ := by
     apply Cat.ext
-    simpa [pToD_I_cat, dToP_I_cat, pToD_I, dToP_I, Grpd.forgetToCat, Cat.of] using
-      (classicalToDirected_comp_directedToClassical (X := {x : X // x ∈ U ∩ V}))
+    exact classicalToDirected_comp_directedToClassical
+      (X := {x : X // x ∈ U ∩ V})
   have hIsoU : pToD_U_cat ≫ dToP_U_cat = 𝟙 _ := by
     apply Cat.ext
-    simpa [pToD_U_cat, dToP_U_cat, pToD_U, dToP_U, Grpd.forgetToCat, Cat.of] using
-      (classicalToDirected_comp_directedToClassical (X := U))
+    exact classicalToDirected_comp_directedToClassical (X := U)
   have hIsoV : pToD_V_cat ≫ dToP_V_cat = 𝟙 _ := by
     apply Cat.ext
-    simpa [pToD_V_cat, dToP_V_cat, pToD_V, dToP_V, Grpd.forgetToCat, Cat.of] using
-      (classicalToDirected_comp_directedToClassical (X := V))
+    exact classicalToDirected_comp_directedToClassical (X := V)
   have hIsoX : pToD_X_cat ≫ dToP_X_cat = 𝟙 _ := by
     apply Cat.ext
-    simpa [pToD_X_cat, dToP_X_cat, pToD_X, dToP_X, Grpd.forgetToCat, Cat.of] using
-      (classicalToDirected_comp_directedToClassical (X := X))
+    exact classicalToDirected_comp_directedToClassical (X := X)
   have hpathDescent : IsPushout dI₁ dI₂ dJ₁ dJ₂ := by
     -- Construct the descent functor directly. Its action on each path is
     -- defined by an open-cover subdivision; independence of the subdivision

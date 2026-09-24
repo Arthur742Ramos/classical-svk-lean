@@ -49,7 +49,7 @@ variable {f₀ f₁ : D(X, Y)}
 
 instance instFunLike : FunLike (Dihomotopy f₀ f₁) (I × X) Y where
   coe f := f.toFun
-  coe_injective' f g h := by
+  coe_injective f g h := by
     obtain ⟨⟨⟨_, _⟩, _⟩, _⟩ := f
     obtain ⟨⟨⟨_, _⟩, _⟩, _⟩ := g
     congr
@@ -122,7 +122,7 @@ section
 Evaluating a dipath homotopy at an intermediate point in the left coordinate, giving us a `dipath`.
 -/
 def eval_at_left {f g : D(I, X)} (F : Dihomotopy f g) (t : I) : Dipath (F (t, 0)) (F (t, 1)) where
-  toFun := F.curry t
+  toContinuousMap := (F.curry t).toContinuousMap
   source' := by simp
   target' := by simp
   dipath_toPath := DirectedUnitInterval.isDipath_of_isDipath_comp_id
@@ -134,7 +134,7 @@ Given a dihomotopy H: f ∼ g, get the dipath traced by the point `x` as it move
 -/
 def eval_at_right {X : Type*} {Y : Type*} [DirectedSpace X] [DirectedSpace Y] {f g : D(X, Y)}
   (H : DirectedMap.Dihomotopy f g) (x : X) : Dipath (f x) (g x) where
-    toFun := fun t => H (t, x)
+    toContinuousMap := ⟨fun t => H (t, x), H.continuous_toFun.comp (continuous_id.prodMk continuous_const)⟩
     source' := H.apply_zero x
     target' := H.apply_one x
     dipath_toPath := by
@@ -167,16 +167,16 @@ variable {t₀ t₁ : I} (γ : Dipath t₀ t₁) {T : I}
 variable (hT : γ T = half_I)
 
 def FirstPartStretch (ht₀ : (t₀ : ℝ) ≤ 2⁻¹) : Dipath (⟨2 * (t₀.1 : ℝ), double_mem_I ht₀⟩ : I) (1 : I) where
-  toFun := Dipath.stretch_up (FirstPart γ T) (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
-  source' := by simp
-  target' := by simp [hT]
-  dipath_toPath := Dipath.isDipath_stretch_up (_) (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
+  toPath := (Dipath.stretch_up (FirstPart γ T)
+      (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })).toPath.cast (by simp) (by simp [hT])
+  dipath_toPath := isDipath_cast _ _ _ <| Dipath.isDipath_stretch_up (FirstPart γ T)
+    (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
 
 def SecondPartStretch (ht₁ : 2⁻¹ ≤ (t₁ : ℝ)) : Dipath (0 : I) ⟨2 * (t₁.1 : ℝ) - 1, double_sub_one_mem_I ht₁⟩ where
-  toFun := Dipath.stretch_down (SecondPart γ T) (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
-  source' := by simp [hT]
-  target' := by simp
-  dipath_toPath := Dipath.isDipath_stretch_down (_) (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
+  toPath := (Dipath.stretch_down (SecondPart γ T)
+      (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })).toPath.cast (by simp [hT]) (by simp)
+  dipath_toPath := isDipath_cast _ _ _ <| Dipath.isDipath_stretch_down (SecondPart γ T)
+    (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
 
 
 end trans_aux₁
@@ -390,7 +390,7 @@ def trans {f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G: Dihomotopy f₁ f₂) 
         _ = ((a₁.toPath.trans a₂.toPath).map Γ.continuous_toFun).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rfl
         _ = ((a₁.toPath.map Γ.continuous_toFun).trans (a₂.toPath.map Γ.continuous_toFun)).reparam φ φ.continuous_toFun φ₀ φ₁ t
                                                                           := by rw [Path.map_trans a₁.toPath a₂.toPath (Γ.continuous_toFun)]
-        _ = (r₁.toPath.trans r₂.toPath).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rw [hr₁a₁, hr₂a₂]
+        _ = (r₁.toPath.trans r₂.toPath).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rw [hr₁a₁, hr₂a₂]; rfl
         _ = (r₁.trans r₂).reparam φ φ₀ φ₁ t := rfl
 
 lemma trans_apply {f₀ f₁ f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G : Dihomotopy f₁ f₂) (x : I × X) :
@@ -463,7 +463,7 @@ variable {f₀ f₁ : D(X, Y)} {P : D(X, Y) → Prop}
 
 instance instFunLike : FunLike (DihomotopyWith f₀ f₁ P) (I × X) Y where
   coe F := ⇑F.toDihomotopy
-  coe_injective' := by
+  coe_injective := by
     rintro ⟨⟨⟨⟨F, _⟩, _⟩, _⟩, _⟩ ⟨⟨⟨⟨G, _⟩, _⟩, _⟩, _⟩ h
     congr
 
@@ -474,7 +474,7 @@ instance : DihomotopyLike (DihomotopyWith f₀ f₁ P) f₀ f₁ where
   map_one_left F := F.map_one_left
 
 theorem coeFn_injective : @Function.Injective (DihomotopyWith f₀ f₁ P) (I × X → Y) (⇑) :=
-  DFunLike.coe_injective'
+  DFunLike.coe_injective
 
 @[ext]
 lemma ext {F G : DihomotopyWith f₀ f₁ P} (h : ∀ x, F x = G x) : F = G :=
@@ -517,6 +517,9 @@ def refl (f : D(X, Y)) (hf : P f) : DihomotopyWith f f P := {
   prop' := by
     intro t
     convert hf
+    apply DirectedMap.ext
+    intro x
+    rfl
 }
 
 instance : Inhabited (DihomotopyWith (DirectedMap.id X) (DirectedMap.id X) (fun _ => True)) :=
@@ -537,16 +540,22 @@ def trans {f₀ f₁ f₂ : D(X, Y)} (F : DihomotopyWith f₀ f₁ P) (G : Dihom
     case isTrue h =>
       have : ((t : ℝ) ≤ 2⁻¹) := by { simp at h; exact h }
       convert F.prop' ⟨2 * (t : ℝ), double_mem_I this⟩
-      ext x
-      change ((F.toDihomotopy.dihom_to_hom.extend) (2 * t : ℝ)) x = F.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ), _⟩, x)
-      rw [←ContinuousMap.Homotopy.extend_apply_coe F.toDihomotopy.dihom_to_hom _ x]
+      all_goals
+        rename_i x
+        change (F.toDihomotopy.dihom_to_hom.extend (2 * (t : ℝ))) x =
+          F.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ), double_mem_I this⟩, x)
+        rw [←ContinuousMap.Homotopy.extend_apply_coe
+          F.toDihomotopy.dihom_to_hom ⟨2 * (t : ℝ), double_mem_I this⟩ x]
 
     case isFalse h =>
       have : (2⁻¹ ≤ (t : ℝ)) := by { simp at h; linarith }
       convert G.prop' ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩
-      ext x
-      change ((G.toDihomotopy.dihom_to_hom.extend) (2 * (t : ℝ) - 1)) x = G.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ) - 1, _⟩, x)
-      rw [←ContinuousMap.Homotopy.extend_apply_coe G.toDihomotopy.dihom_to_hom _ x]
+      all_goals
+        rename_i x
+        change (G.toDihomotopy.dihom_to_hom.extend (2 * (t : ℝ) - 1)) x =
+          G.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩, x)
+        rw [←ContinuousMap.Homotopy.extend_apply_coe
+          G.toDihomotopy.dihom_to_hom ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩ x]
 }
 
 lemma trans_apply {f₀ f₁ f₂ : D(X, Y)} (F : DihomotopyWith f₀ f₁ P) (G : DihomotopyWith f₁ f₂ P)

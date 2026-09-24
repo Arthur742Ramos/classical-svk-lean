@@ -18,7 +18,7 @@ elab "#audit_closed_statement" : command => do
   | some (.defnInfo info) =>
     unless info.type == .sort .zero do
       throwError "selected completeStatement must have the closed type Prop"
-    let mut checkedProofs := 0
+    let mut checkedProofs : Nat := 0
     let mut pending := info.value.getUsedConstants.toList
     let mut visited : List Name := []
     while !pending.isEmpty do

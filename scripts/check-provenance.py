@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DIRECTED_REPO = "https://github.com/Dominique-Lawson/Directed-Topology-Lean-4"
 DIRECTED_SHA = "009529606c66d37ef93b4b81b8587f71ce4d2c56"
 MATHLIB_REPO = "https://github.com/leanprover-community/mathlib4.git"
-MATHLIB_SHA = "8f9d9cff6bd728b17a24e163c9402775d9e6a365"
+MATHLIB_SHA = "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 COMPUTATIONAL_PATHS_SHA = "257c659b7973aeda900d86a5da73b208712c7523"
 
 
@@ -143,7 +143,7 @@ def main() -> None:
             raise SystemExit("vendored source baseline does not match the immutable upstream file: " + item["source_path"])
     if not any(item.get("path") == "Lean4/directed_van_kampen.lean" for item in source_manifest.get("files", [])):
         raise SystemExit("vendored-source manifest omits the imported theorem module")
-    if len(compatibility_ports) != 20:
+    if len(compatibility_ports) != 26:
         raise SystemExit(f"unexpected number of ported upstream files: {len(compatibility_ports)}")
     if extracted_helpers != ["Lean4/path_descent_helpers.lean"]:
         raise SystemExit("expected exactly one extracted path-descent helper module")

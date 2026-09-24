@@ -33,18 +33,18 @@ lemma directed (γ : Dipath x y) : DirectedMap.Directed γ.toContinuousMap :=
   fun _ _ _ φ_dipath => isDipath_reparam φ_dipath γ.dipath_toPath
 
 def toDirectedMap (γ : Dipath x y) : D(I, X) where
+  toContinuousMap := γ.toContinuousMap
   directed_toFun := Dipath.directed γ
-  toFun := γ.toFun
 
 instance Dipath.instFunLike : FunLike (Dipath x y) I X where
-  coe := fun γ => γ.toFun
-  coe_injective' := fun γ γ' h => by
+  coe := fun γ => γ.toContinuousMap
+  coe_injective := fun γ γ' h => by
     obtain ⟨⟨⟨_, _⟩, _, _⟩, _⟩ := γ
     obtain ⟨⟨⟨_, _⟩, _, _⟩, _⟩ := γ'
     congr
 
 instance Dipath.directedMapClass : DirectedMapClass (Dipath x y) I X where
-  map_continuous := fun γ => γ.continuous_toFun
+  map_continuous := fun γ => γ.continuous
   map_directed := fun γ => directed γ
 
 end Dipath
@@ -63,7 +63,7 @@ def of_isDipath {γ : Path x y} (hγ :IsDipath γ) : Dipath x y := {
 
 /-- An directed map from I to a directed space can be turned into a dipath -/
 def of_directedMap (f : D(I, X)) : Dipath (f 0) (f 1) := {
-  toContinuousMap := (f : C(I, X)),
+  toContinuousMap := f.toContinuousMap,
   source' := by simp,
   target' := by simp,
   dipath_toPath := DirectedUnitInterval.isDipath_of_isDipath_comp_id
@@ -284,13 +284,15 @@ variable {Y : Type*} [DirectedSpace Y] {x₀ x₁ : X} {y₀ y₁ : Y}
 
 /-- Two dipaths together form a dipath in the product space -/
 def dipath_product (γ₁ : Dipath x₀ x₁) (γ₂ : Dipath y₀ y₁) : Dipath (x₀, y₀) (x₁, y₁) where
-  toFun := fun t => (γ₁ t, γ₂ t)
-  source' := by { simp [γ₁.source', γ₂.source'] }
-  target' := by { simp [γ₁.target', γ₂.target'] }
+  toPath := {
+    toContinuousMap := ⟨fun t => (γ₁ t, γ₂ t), γ₁.continuous.prodMk γ₂.continuous⟩
+    source' := by simp [γ₁.source', γ₂.source']
+    target' := by simp [γ₁.target', γ₂.target']
+  }
   dipath_toPath := by
       constructor
-      { convert γ₁.dipath_toPath }
-      { convert γ₂.dipath_toPath }
+      · convert γ₁.dipath_toPath using 1 <;> ext t <;> rfl
+      · convert γ₂.dipath_toPath using 1 <;> ext t <;> rfl
 
 /-- Given a directed path in a product space, we can project it to its first coordinate to
 obtain a directed path -/

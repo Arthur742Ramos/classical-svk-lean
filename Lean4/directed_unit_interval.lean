@@ -35,7 +35,12 @@ lemma isDipath_identityPath : IsDipath IdentityPath := fun _ _ hab => hab
 -/
 lemma isDipath_of_isDipath_comp_id {X : Type u} [DirectedSpace X] {x y : X} {γ : Path x y}
   (h : IsDipath $ IdentityPath.map γ.continuous_toFun) : IsDipath γ := by
-  convert isDipath_cast (IdentityPath.map γ.continuous_toFun) (γ.source.symm) (γ.target.symm) h
+  have hpath : (IdentityPath.map γ.continuous_toFun).cast γ.source.symm γ.target.symm = γ := by
+    apply Path.ext
+    funext t
+    rfl
+  rw [← hpath]
+  exact isDipath_cast (IdentityPath.map γ.continuous_toFun) γ.source.symm γ.target.symm h
 
 /-- A directed map from I to I is monotone -/
 lemma monotone_of_directed (f : D(I, I)) : Monotone f :=

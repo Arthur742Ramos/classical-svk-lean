@@ -23,7 +23,8 @@ lemma double_mem_I_of_bounded {t₀ t₁ : I} (t : I) (γ : Dipath t₀ t₁) (h
 def stretch_up_path {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₁ : ↑t₁ ≤ (2⁻¹ : ℝ)) : Path
   (⟨2 * ↑t₀, by { rw [←γ.source']; exact double_mem_I_of_bounded 0 γ ht₁ }⟩ : I)
   ⟨2 * ↑t₁, double_mem_I ht₁⟩ where
-    toFun := fun t => ⟨2 * (γ t), double_mem_I_of_bounded t γ ht₁⟩
+    toContinuousMap := ⟨fun t => ⟨2 * (γ t : ℝ), double_mem_I_of_bounded t γ ht₁⟩,
+      Continuous.subtype_mk (continuous_const.mul (continuous_subtype_val.comp γ.continuous)) _⟩
     source' := by simp [γ.source']
     target' := by simp [γ.target']
 
@@ -49,7 +50,9 @@ lemma double_sub_one_mem_I_of_bounded {t₀ t₁ : I} (t : I) (γ : Dipath t₀ 
 def stretch_down_path {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀) : Path
   (⟨2 * ↑t₀ - 1, double_sub_one_mem_I ht₀⟩ : I)
   ⟨2 * ↑t₁ - 1, by { rw [←γ.target']; exact double_sub_one_mem_I_of_bounded 1 γ ht₀ }⟩ where
-    toFun := fun t => ⟨2 * (γ t) - 1, double_sub_one_mem_I_of_bounded t γ ht₀⟩
+    toContinuousMap := ⟨fun t => ⟨2 * (γ t : ℝ) - 1, double_sub_one_mem_I_of_bounded t γ ht₀⟩,
+      Continuous.subtype_mk
+        ((continuous_const.mul (continuous_subtype_val.comp γ.continuous)).sub continuous_const) _⟩
     source' := by simp [γ.source']
     target' := by simp [γ.target']
 

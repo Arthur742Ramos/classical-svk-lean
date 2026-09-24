@@ -1,9 +1,11 @@
-import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.CommSq
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 import Lean4.dihomotopy_cover
 import Lean4.pushout_alternative
 import Lean4.dihomotopy_to_path_dihomotopy
 import Lean4.morphism_aux
+
+set_option backward.isDefEq.respectTransparency false
 
 /-
   Constructive path-cover descent for directed fundamental categories.
@@ -94,10 +96,11 @@ end FunctorProps
 - Define the behaviour on objects
 -/
 def FunctorOnObj (x : dπₓ X) : C :=
-  Or.by_cases
-    ((Set.mem_union x.as X₁ X₂).mp (Filter.mem_top.mpr hX x.as))
-      (fun hx => F₁.toFunctor.obj ⟨x.as, hx⟩)
-      (fun hx => F₂.toFunctor.obj ⟨x.as, hx⟩)
+  if hx₁ : x.as ∈ X₁ then
+    F₁.toFunctor.obj ⟨x.as, hx₁⟩
+  else
+    F₂.toFunctor.obj ⟨x.as,
+      ((Set.mem_union x.as X₁ X₂).mp (Filter.mem_top.mpr hX x.as)).resolve_left hx₁⟩
 
 -- We will use the shorhand notation F_obj
 local notation "F_obj" => FunctorOnObj hX F₁ F₂
@@ -108,11 +111,11 @@ local notation "F_obj" => FunctorOnObj hX F₁ F₂
 
 variable {F₁ F₂}
 
-lemma functorOnObj_apply_one (h_comm : (dπₘ i₁) ≫ F₁ = (dπₘ i₂) ≫ F₂)
+lemma functorOnObj_apply_one (_h_comm : (dπₘ i₁) ≫ F₁ = (dπₘ i₂) ≫ F₂)
     {x : X} (hx : x ∈ X₁) : F₁.toFunctor.obj ⟨x, hx⟩ = F_obj ⟨x⟩ := by
-  have := h_comm
-  convert (dif_pos hx).symm using 1
-  rfl
+  change F₁.toFunctor.obj ⟨x, hx⟩ =
+    (if hx₁ : x ∈ X₁ then F₁.toFunctor.obj ⟨x, hx₁⟩ else _)
+  rw [dif_pos hx]
 
 lemma functorOnObj_apply_two (h_comm : (dπₘ i₁) ≫ F₁ = (dπₘ i₂) ≫ F₂)
     {x : X} (hx₂ : x ∈ X₂) : F₂.toFunctor.obj ⟨x, hx₂⟩ = F_obj ⟨x⟩ := by
@@ -128,10 +131,16 @@ lemma functorOnObj_apply_two (h_comm : (dπₘ i₁) ≫ F₁ = (dπₘ i₂) �
         _ = F₂.toFunctor.obj ((dπₘ i₂).toFunctor.obj ⟨x, hx₀⟩) := this
         _ = F₂.toFunctor.obj (⟨x, hx₂⟩) := rfl
 
-    rw [this.symm]
-    convert (dif_pos hx₁).symm using 1; rfl
+    change F₂.toFunctor.obj ⟨x, hx₂⟩ =
+      (if hx : x ∈ X₁ then F₁.toFunctor.obj ⟨x, hx⟩ else _)
+    rw [dif_pos hx₁]
+    exact this.symm
   case neg =>
-    convert (dif_neg hx₁).symm using 1; rfl
+    have hx₂' : x ∈ X₂ :=
+      ((Set.mem_union x X₁ X₂).mp (Filter.mem_top.mpr hX x)).resolve_left hx₁
+    change F₂.toFunctor.obj ⟨x, hx₂⟩ =
+      (if hx : x ∈ X₁ then F₁.toFunctor.obj ⟨x, hx⟩ else F₂.toFunctor.obj ⟨x, hx₂'⟩)
+    rw [dif_neg hx₁]
 
 /- ### Functor on Maps -/
 

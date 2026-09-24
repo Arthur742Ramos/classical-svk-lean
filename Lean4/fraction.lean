@@ -4,6 +4,10 @@ import Mathlib.Tactic
 open scoped unitInterval
 noncomputable section
 
+theorem div_add_div_same (a b c : ℝ) :
+    a / c + b / c = (a + b) / c := by
+  rw [add_div]
+
 /--
 For any natural numbers `i n : ℕ` such that `n` is positive and `i ≤ n`, we have that the fraction
 `i/n : ℝ` lives in the unit interval
@@ -82,8 +86,10 @@ For any `n m : ℕ` with `m < n`, we have that `m/n ≤ (m+1) ≤ n`
 lemma lt_frac_succ {n m : ℕ} (hn : m < n) :
     Fraction (lt_of_le_of_lt (Nat.zero_le m) hn) (le_of_lt hn) <
     Fraction (lt_of_le_of_lt (Nat.zero_le m) hn) (Nat.succ_le_of_lt hn) := by
-  simp
-  exact div_lt_div_of_pos_right (by exact_mod_cast Nat.lt_succ_self m)
-    (Nat.cast_pos.mpr (lt_of_le_of_lt (Nat.zero_le m) hn))
+  apply Subtype.coe_lt_coe.mp
+  exact div_lt_div_of_pos_right
+    (show (m : ℝ) < (Nat.succ m : ℝ) by exact_mod_cast Nat.lt_succ_self m)
+    (show (0 : ℝ) < (n : ℝ) by
+      exact_mod_cast lt_of_le_of_lt (Nat.zero_le m) hn)
 
 end Fraction

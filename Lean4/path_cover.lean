@@ -291,12 +291,15 @@ lemma covered_partwise_of_parts (hX : X₀ ∪ X₁ = Set.univ) {n : ℕ} (hn : 
     exact (mul_lt_mul_iff_of_pos_right hk).mpr (by linarith)
 
   have : Fraction (Nat.succ_pos n') (le_of_lt h₁) = Fraction.ofPos (Nat.succ_pos n) := by
-    simp [d_def, n_def]
-    rw [←Nat.cast_succ, ←Nat.cast_succ, ←Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos hk]
-    rw [←Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos prod_pos, mul_comm, Nat.cast_mul]
-    have : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (ne_of_gt hk)
-    rw [←div_div, div_self this, Nat.cast_succ]
-    exact one_div _
+    apply Subtype.ext
+    rw [Fraction.Fraction_coe, Fraction.ofPos_coe, hd_eq_k]
+    have hn'_succ : n'.succ = (n + 1) * k := by
+      rw [n_def, ← Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos prod_pos]
+    rw [hn'_succ]
+    push_cast
+    have hk_real : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (ne_of_gt hk)
+    field_simp
+    <;> ring
 
   have h₃ : (n' : ℝ) - (d' : ℝ) = (↑(n * k - 1) : ℝ) + 1 := by
     rw [←Nat.cast_sub (le_of_lt $ Nat.lt_of_succ_lt_succ h₁), ←Nat.cast_succ, ← Nat.pred_eq_sub_one]
@@ -357,13 +360,11 @@ lemma covered_partwise_trans  {hX : X₀ ∪ X₁ = Set.univ} {n : ℕ} {x₀ x�
   intros i hi
   have h_lt : n.succ < (n + n).succ.succ := by linarith
   have h₁ : Fraction (Nat.succ_pos (n + n).succ) (le_of_lt h_lt) = Fraction.ofPos two_pos := by
-    simp
-    rw [←one_div]
-    apply (div_eq_div_iff _ _).mpr
-    ring
-    have : (n : ℝ) ≥ 0 := Nat.cast_nonneg n
-    linarith
-    linarith
+    apply Subtype.ext
+    rw [Fraction.Fraction_coe, Fraction.ofPos_coe]
+    push_cast
+    field_simp
+    <;> ring
 
   by_cases h : i < n.succ
   · rw [←SplitProperties.firstPart_range_interval_partial_coe (γ₁.trans γ₂) h_lt h]

@@ -22,16 +22,13 @@ lemma directedToClassical_naturality (f : dTopCat.of X ⟶ dTopCat.of Y) :
         (CategoryTheory.Grpd.forgetToCat.map
           (FundamentalGroupoid.fundamentalGroupoidFunctor.map
             (TopCat.ofHom f.toContinuousMap))).toFunctor := by
-  refine CategoryTheory.Functor.ext ?_ ?_
-  · intro x
-    rfl
-  · intro x y q
-    simp only [Functor.comp_map, eqToHom_refl, Category.id_comp, Category.comp_id]
-    change directedClassToPathClass (Dipath.Dihomotopic.Quotient.mapFn q f) =
-      Path.Homotopic.Quotient.mapFn (directedClassToPathClass q) f.toContinuousMap
-    refine Quotient.inductionOn q ?_
-    intro p
-    rfl
+  refine CategoryTheory.Functor.hext (fun _ => rfl) ?_
+  intro x y q
+  change directedClassToPathClass (Dipath.Dihomotopic.Quotient.mapFn q f) ≍
+    (directedClassToPathClass q).map f.toContinuousMap
+  refine Quotient.inductionOn q ?_
+  intro p
+  rfl
 
 end
 end ClassicalSVK

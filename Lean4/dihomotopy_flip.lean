@@ -55,12 +55,16 @@ variable {X : dTopCat} {f g : D(I, X)}
 
 def flip (F : Dihomotopy f g) : Dihomotopy (F.eval_at_right 0).toDirectedMap (F.eval_at_right 1).toDirectedMap :=
 {
-  toFun := fun t => F (t.2, t.1)
+  toContinuousMap := ⟨fun t => F (t.2, t.1),
+    F.continuous_toFun.comp (continuous_snd.prodMk continuous_fst)⟩
   directed_toFun := fun ⟨x₀, y₀⟩ ⟨x₁, y₁⟩ γ ⟨h₁, h₂⟩ => by
       let γ' : Dipath (y₀, x₀) (y₁, x₁) := {
-        toFun := fun t => ((γ t).2, (γ t).1)
-        source' := by simp
-        target' := by simp
+        toPath := {
+          toContinuousMap := ⟨fun t => ((γ t).2, (γ t).1),
+            (continuous_snd.prodMk continuous_fst).comp γ.continuous⟩
+          source' := by simp
+          target' := by simp
+        }
         dipath_toPath := ⟨h₂, h₁⟩
       }
       exact F.directed_toFun γ'.toPath γ'.dipath_toPath

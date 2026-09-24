@@ -1,5 +1,5 @@
 import Mathlib.CategoryTheory.Category.Cat
-import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.CommSq
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 /-

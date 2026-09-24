@@ -76,7 +76,8 @@ lemma second_part_apply (γ : Dipath x₀ x₁) (T t : I) :
 
 def trans_reparam_map {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : D(I, I) :=
 {
-  toFun := fun t => ⟨trans_reparam T t, trans_reparam_mem_I t hT₀ hT₁⟩,
+  toContinuousMap := ⟨fun t => ⟨trans_reparam T t, trans_reparam_mem_I t hT₀ hT₁⟩,
+    Continuous.subtype_mk (continuous_trans_reparam hT₀ hT₁) _⟩,
   directed_toFun := DirectedUnitInterval.directed_of_monotone _ (monotone_trans_reparam hT₀ hT₁)
 }
 

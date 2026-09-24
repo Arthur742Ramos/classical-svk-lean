@@ -1,5 +1,6 @@
 import Lean4.constructions
 import Mathlib.CategoryTheory.ConcreteCategory.Basic
+import Mathlib.CategoryTheory.ConcreteCategory.Forget
 import Mathlib.CategoryTheory.Elementwise
 
 /-!

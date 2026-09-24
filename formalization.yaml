@@ -75,7 +75,7 @@ related_formalizations:
       functor; it does not invoke DirectedVanKampen.directed_van_kampen. The
       result also uses the universal-preorder equivalence and naturality
       bridge to Mathlib's ordinary path groupoid.
-  - id: "https://github.com/leanprover-community/mathlib4/tree/8f9d9cff6bd728b17a24e163c9402775d9e6a365"
+  - id: "https://github.com/leanprover-community/mathlib4/tree/065356127b1dc0016f66b7283ce0ce2c4055aa55"
     relationship: "builds-on"
     note: >-
       Exact Mathlib commit pin for the ordinary path fundamental groupoid, induced

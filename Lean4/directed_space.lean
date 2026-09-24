@@ -1,5 +1,14 @@
 import Mathlib.Topology.Connected.PathConnected
 
+namespace Path
+
+/-- Compatibility name for the unit-interval endpoint lemma used by the source port. -/
+theorem extend_extends {X : Type*} [TopologicalSpace X] {x y : X} (γ : Path x y)
+    {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) : γ.extend t = γ ⟨t, ht⟩ := by
+  exact extend_extends' γ ⟨t, ht⟩
+
+end Path
+
 /-
   # Definition of directed spaces
   This file defines the directed space, an extension of a topological space where
@@ -43,6 +52,6 @@ def isDipath_reparam (hfmono : Monotone f) (hγ : IsDipath γ) : IsDipath (f.map
 lemma isDipath_cast {x y x' y' : α} (γ : Path x y) (hx : x' = x) (hy : y' = y) (hγ : IsDipath γ) :
   IsDipath (γ.cast hx hy) := by
     subst_vars
-    convert hγ
+    simpa only [Path.cast_rfl_rfl] using hγ
 
 end DirectedSpace

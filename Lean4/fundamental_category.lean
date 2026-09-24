@@ -160,37 +160,47 @@ lemma comp_eq (x y z : FundamentalCategory X) (p : x ⟶ y) (q : y ⟶ z) :
 lemma id_eq_path_refl (x : FundamentalCategory X) :
     𝟙 x = ⟦Dipath.refl x.as⟧ := rfl
 
+@[reducible]
 def fundamentalCategoryFunctor : dTopCat ⥤ CategoryTheory.Cat where
-  obj X := { α := FundamentalCategory X }
-  map f := { toFunctor := {
+      obj X := { α := FundamentalCategory X }
+      map f := { toFunctor := {
       obj := fun x => ⟨f x.as⟩
       map := fun {X Y} p => by exact p.mapFn f
-      map_id := fun X => rfl
+      map_id := fun X => by
+        change Dipath.Dihomotopic.Quotient.mapFn
+          ⟦Dipath.refl X.as⟧ f = ⟦Dipath.refl (f X.as)⟧
+        rw [← Dipath.Dihomotopic.map_lift]
+        congr 1
       map_comp := fun {x y z} p q => by
         refine Quotient.inductionOn₂ p q fun a b => ?_
-        simp only [comp_eq, ←Dipath.Dihomotopic.map_lift, ←Dipath.Dihomotopic.comp_lift, Dipath.map_trans]
-        erw [←Dipath.Dihomotopic.comp_lift]; rfl
+        change Dipath.Dihomotopic.Quotient.mapFn
+          (Dipath.Dihomotopic.Quotient.comp ⟦a⟧ ⟦b⟧) f =
+          Dipath.Dihomotopic.Quotient.comp ⟦a.map f⟧ ⟦b.map f⟧
+        rw [←Dipath.Dihomotopic.comp_lift a b,
+          ←Dipath.Dihomotopic.map_lift (a.trans b) f,
+          Dipath.map_trans,
+          ←Dipath.Dihomotopic.comp_lift]
     }}
 
-  map_id X := by
-    apply CategoryTheory.Cat.ext
-    simp only
-    change _ = 𝟭 (FundamentalCategory X)
-    congr
-    ext x y p
-    refine' Quotient.inductionOn p fun q => _
-    rw [← Dipath.Dihomotopic.map_lift]
-    conv_rhs => rw [←q.map_id]
-    rfl
+      map_id X := by
+        apply CategoryTheory.Cat.ext
+        simp only
+        change _ = 𝟭 (FundamentalCategory X)
+        congr
+        ext x y p
+        refine' Quotient.inductionOn p fun q => _
+        rw [← Dipath.Dihomotopic.map_lift]
+        conv_rhs => rw [←q.map_id]
+        rfl
 
-  map_comp f g := by
-    apply CategoryTheory.Cat.ext
-    simp only
-    congr
-    ext x y p
-    refine' Quotient.inductionOn p fun q => _
-    simp only [Quotient.map_mk, Dipath.map_map, Quotient.eq']
-    rfl
+      map_comp f g := by
+        apply CategoryTheory.Cat.ext
+        simp only
+        congr
+        ext x y p
+        refine' Quotient.inductionOn p fun q => _
+        simp only [Quotient.map_mk, Dipath.map_map, Quotient.eq']
+        rfl
 
 scoped notation "dπ" => FundamentalCategory.fundamentalCategoryFunctor
 scoped notation "dπₓ" => FundamentalCategory.fundamentalCategoryFunctor.obj

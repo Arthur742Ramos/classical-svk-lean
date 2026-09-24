@@ -11,7 +11,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MATHLIB_SHA = "8f9d9cff6bd728b17a24e163c9402775d9e6a365"
+MATHLIB_SHA = "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 DIRECTED_SHA = "009529606c66d37ef93b4b81b8587f71ce4d2c56"
 THEOREM = "ClassicalSVK.seifert_van_kampen_groupoid"
 DEFINITION = "ClassicalSVK.completeStatement"
@@ -145,7 +145,7 @@ def main() -> None:
     require(mathlib.get("rev") == MATHLIB_SHA and mathlib.get("type") == "git",
             "Mathlib manifest pin changed")
     require((ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
-            == "leanprover/lean4:v4.28.0", "Lean toolchain pin changed")
+            == "leanprover/lean4:v4.35.0-rc2", "Lean toolchain pin changed")
 
     metadata_text = (ROOT / "formalization.yaml").read_text(encoding="utf-8")
     metadata = yaml.safe_load(metadata_text)

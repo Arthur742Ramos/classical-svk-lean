@@ -1,4 +1,4 @@
-import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.CommSq
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 import Lean4.path_descent_helpers
 import Lean4.dihomotopy_cover

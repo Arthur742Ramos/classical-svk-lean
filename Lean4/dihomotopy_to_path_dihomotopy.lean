@@ -31,10 +31,22 @@ variable {X : dTopCat} {x y : X} (γ : Dipath x y)
 
 def MinDirected : D(I × I, I) where
   toFun := fun t => min t.1 t.2
+  continuous_toFun := Continuous.subtype_mk
+    (continuous_min.comp
+      ((continuous_subtype_val.comp continuous_fst).prodMk
+        (continuous_subtype_val.comp continuous_snd)))
+    (fun t => ⟨le_min t.1.2.1 t.2.2.1,
+      le_trans (min_le_left _ _) t.1.2.2⟩)
   directed_toFun := fun t₀ t₁ γ ⟨h₁, h₂⟩ a b hab => le_min (min_le_of_left_le (h₁ hab)) (min_le_of_right_le (h₂ hab))
 
 def MaxDirected : D(I × I, I) where
   toFun := fun t => max t.1 t.2
+  continuous_toFun := Continuous.subtype_mk
+    (continuous_max.comp
+      ((continuous_subtype_val.comp continuous_fst).prodMk
+        (continuous_subtype_val.comp continuous_snd)))
+    (fun t => ⟨le_trans t.1.2.1 (le_max_left _ _),
+      max_le t.1.2.2 t.2.2.2⟩)
   directed_toFun := fun t₀ t₁ γ ⟨h₁, h₂⟩ a b hab => max_le (le_max_of_le_left (h₁ hab)) (le_max_of_le_right (h₂ hab))
 
 def SourceToPath : Dihomotopy (Dipath.refl x).toDirectedMap γ.toDirectedMap where

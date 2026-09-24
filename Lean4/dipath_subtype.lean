@@ -36,6 +36,7 @@ lemma target_elt_of_image_subset {γ : Dipath x y} (hγ : range γ ⊆ X₀) : y
 def SubtypePath {γ : Dipath x y} (hγ : range γ ⊆ X₀) :
     Path (⟨x, source_elt_of_image_subset hγ⟩ : X₀) ⟨y, target_elt_of_image_subset hγ⟩ where
   toFun := fun t => ⟨γ t, hγ (mem_range_self t)⟩
+  continuous_toFun := Continuous.subtype_mk γ.continuous (fun t => hγ (mem_range_self t))
   source' := by simp
   target' := by simp
 

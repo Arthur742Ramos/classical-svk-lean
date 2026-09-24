@@ -8,15 +8,20 @@ license is preserved in [LICENSE.md](LICENSE.md), and the source README is
 preserved in [README.md](README.md). `vendor-manifest.json` records the SHA-256
 of each copied Lean source file both at that commit and in this port.
 
-The port updates old Lean 4.6 / Mathlib APIs for Lean 4.28 and Mathlib commit
-`8f9d9cff6bd728b17a24e163c9402775d9e6a365`. The compatibility edits are in:
+The port updates old Lean 4.6 / Mathlib APIs for Lean 4.35.0-rc2 and Mathlib commit
+`065356127b1dc0016f66b7283ce0ce2c4055aa55`. The compatibility edits are in:
 
 - `Lean4/cover_lemma.lean`
 - `Lean4/dihomotopy_cover.lean`
+- `Lean4/dihomotopy_flip.lean`
+- `Lean4/dihomotopy_to_path_dihomotopy.lean`
 - `Lean4/dipath_subtype.lean`
 - `Lean4/dipath.lean`
 - `Lean4/directed_homotopy.lean`
+- `Lean4/directed_map.lean`
 - `Lean4/directed_path_homotopy.lean`
+- `Lean4/directed_space.lean`
+- `Lean4/directed_unit_interval.lean`
 - `Lean4/directed_van_kampen.lean`
 - `Lean4/dTop.lean`
 - `Lean4/fraction_equalities.lean`
@@ -31,6 +36,7 @@ The port updates old Lean 4.6 / Mathlib APIs for Lean 4.28 and Mathlib commit
 - `Lean4/SplitPath/split_dipath.lean`
 - `Lean4/SplitPath/split_path.lean`
 - `Lean4/SplitPath/split_properties.lean`
+- `Lean4/stretch_path.lean`
 
 The path subdivision and homotopy-grid construction formerly grouped with the
 final directed theorem in `Lean4/directed_van_kampen.lean` is extracted into

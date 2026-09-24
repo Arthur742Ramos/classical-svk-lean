@@ -74,7 +74,8 @@ section
 
 variable (f g : D(I, I))
 
-lemma directed_interpolate (h : ∀ t, f t ≤ g t) : DirectedMap.Directed (interpolate f g) := by
+lemma directed_interpolate (h : ∀ t, f t ≤ g t) :
+    DirectedMap.Directed (interpolate f.toContinuousMap g.toContinuousMap) := by
   intros t₀ t₁ γ γ_dipath x y hxy
 
   let a₀ := (γ x).1
@@ -89,13 +90,13 @@ lemma directed_interpolate (h : ∀ t, f t ≤ g t) : DirectedMap.Directed (inte
 
   apply Subtype.coe_le_coe.mp
 
-  calc (interpolate f g (γ x) : ℝ)
+  calc (interpolate f.toContinuousMap g.toContinuousMap (γ x) : ℝ)
       _  = (1 - a₀ : ℝ) * (f a₁ : ℝ) + (a₀ : ℝ) * (g a₁ : ℝ) := by rfl
       _  = ↑(f a₁) + ↑a₀ * (g a₁ - f a₁)                      := by ring
       _  ≤ ↑(f a₁) + ↑b₀ * (g a₁ - f a₁)                      := add_le_add_right h₁ ↑(f a₁)
       _  = (1 - b₀ : ℝ) * (f a₁ : ℝ) + (b₀ : ℝ) * (g a₁ : ℝ) := by ring
       _  ≤ (1 - b₀ : ℝ) * (f b₁ : ℝ) + (b₀ : ℝ) * (g a₁ : ℝ) := add_le_add_left (mul_le_mul_of_nonneg_left hfab (by unit_interval)) ((b₀ : ℝ) * (g a₁ : ℝ))
       _  ≤ (1 - b₀ : ℝ) * (f b₁ : ℝ) + (b₀ : ℝ) * (g b₁ : ℝ) := add_le_add_right (mul_le_mul_of_nonneg_left hgab (by unit_interval)) ((1 - b₀ : ℝ) * (f b₁ : ℝ))
-      _  = (interpolate f g (γ y) : ℝ) := rfl
+      _  = (interpolate f.toContinuousMap g.toContinuousMap (γ y) : ℝ) := rfl
 
 end

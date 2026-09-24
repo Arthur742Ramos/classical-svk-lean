@@ -11,12 +11,12 @@ groupoids for `U ∩ V`, `U`, `V`, and `X` is a categorical pushout whenever
 ## Formalization dependencies
 
 - Mathlib is pinned to commit
-  `8f9d9cff6bd728b17a24e163c9402775d9e6a365`. The `Challenge` module imports
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`. The `Challenge` module imports
   Mathlib only.
 - Directed-Topology-Lean-4 is pinned as a source dependency to commit
   `009529606c66d37ef93b4b81b8587f71ce4d2c56`. Its `Lean4/` module tree and
   upstream root `Lean4.lean` are vendored and compatibility-ported here so the
-  package builds on Lean 4.28 and the selected Mathlib pin. The selected proof
+  package builds on Lean 4.35.0-rc2 and the selected Mathlib pin. The selected proof
   reuses constructive interval-subdivision and homotopy-grid lemmas under
   `DirectedVanKampen.PushoutFunctor` in the extracted
   `Lean4/path_descent_helpers.lean`, sourced from upstream
@@ -46,7 +46,7 @@ groupoids for `U ∩ V`, `U`, `V`, and `X` is a categorical pushout whenever
   assembles the pushout universal property and does not call the source's final
   `directed_van_kampen` theorem.
 - The immutable Mathlib snapshot
-  <https://github.com/leanprover-community/mathlib4/tree/8f9d9cff6bd728b17a24e163c9402775d9e6a365>
+  <https://github.com/leanprover-community/mathlib4/tree/065356127b1dc0016f66b7283ce0ce2c4055aa55>
   supplies the ordinary fundamental groupoid, topological subspaces, and
   category-theoretic pushout API.
 - The snapshot

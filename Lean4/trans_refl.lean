@@ -31,7 +31,8 @@ open Path.Homotopy
 section TransRefl
 
 lemma directed_transReflReparamAux : DirectedMap.Directed
-    ({ toFun := fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩} : C(I, I)) := by
+    ({ toFun := fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩,
+       continuous_toFun := Continuous.subtype_mk continuous_transReflReparamAux _} : C(I, I)) := by
   apply DirectedUnitInterval.directed_of_monotone _
   intros x y hxy
   unfold transReflReparamAux
@@ -46,7 +47,8 @@ lemma directed_transReflReparamAux : DirectedMap.Directed
   · linarith
 
 def TransReflReparamAuxMap : D(I, I) where
-  toFun := fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩
+  toContinuousMap := ⟨fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩,
+    Continuous.subtype_mk continuous_transReflReparamAux _⟩
   directed_toFun := directed_transReflReparamAux
 
 lemma trans_refl_reparam_dipath (p : Dipath x₀ x₁) : p.trans (Dipath.refl x₁) =
@@ -87,7 +89,8 @@ by norm_num [ReflTransReparamAux]
 
 
 lemma directed_ReflTransReparamAux : DirectedMap.Directed
-    ({ toFun := fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩} : C(I, I)) := by
+    ({ toFun := fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩,
+       continuous_toFun := Continuous.subtype_mk continuous_ReflTransReparamAux _} : C(I, I)) := by
   apply DirectedUnitInterval.directed_of_monotone _
   intros x y hxy
   unfold ReflTransReparamAux
@@ -102,7 +105,8 @@ lemma directed_ReflTransReparamAux : DirectedMap.Directed
   · linarith
 
 def ReflTransReparamAuxMap : D(I, I) where
-  toFun := fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩
+  toContinuousMap := ⟨fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩,
+    Continuous.subtype_mk continuous_ReflTransReparamAux _⟩
   directed_toFun := directed_ReflTransReparamAux
 
 lemma refl_trans_reparam (p : Path x₀ x₁) :

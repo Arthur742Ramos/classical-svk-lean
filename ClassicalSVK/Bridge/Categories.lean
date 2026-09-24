@@ -1,16 +1,19 @@
 import Lean4.dTop
 import Lean4.dihomotopy_to_path_dihomotopy
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
-import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
+import Mathlib.CategoryTheory.CommSq
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 open CategoryTheory
 open scoped unitInterval FundamentalCategory
 
+attribute [local instance_reducible] DirectedSpace.Preorder
+
 universe u
 
 namespace ClassicalSVK
 
+@[instance_reducible]
 def universalPreorder (X : Type u) : Preorder X where
   le := fun _ _ => True
   le_refl := by intro x; trivial

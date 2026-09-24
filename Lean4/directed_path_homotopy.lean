@@ -82,9 +82,11 @@ instance coe_dihom_to_hom : Coe (Dihomotopy p₀ p₁) (Path.Homotopy p₀.toPat
 Evaluating a dipath homotopy at an intermediate point, giving us a `Dipath`.
 -/
 def eval (F : Dihomotopy p₀ p₁) (t : I) : Dipath x y where
-  toFun := F.toDihomotopy.curry t
-  source' := by simp
-  target' := by simp
+  toPath := {
+    toContinuousMap := (F.toDihomotopy.curry t).toContinuousMap
+    source' := F.source t
+    target' := F.target t
+  }
   dipath_toPath := DirectedUnitInterval.isDipath_of_isDipath_comp_id
     $ (F.toDihomotopy.curry t).directed_toFun DirectedUnitInterval.IdentityPath
       DirectedUnitInterval.isDipath_identityPath
@@ -96,12 +98,14 @@ lemma coe_eval (F : Dihomotopy p₀ p₁) (t : I) :
 @[simp]
 lemma eval_zero (F : Dihomotopy p₀ p₁) : F.eval 0 = p₀ := by
   ext t
-  simp [eval]
+  change F.toDihomotopy (0, t) = p₀ t
+  exact F.toDihomotopy.apply_zero t
 
 @[simp]
 lemma eval_one (F : Dihomotopy p₀ p₁) : F.eval 1 = p₁ := by
   ext t
-  simp [eval]
+  change F.toDihomotopy (1, t) = p₁ t
+  exact F.toDihomotopy.apply_one t
 
 end
 
@@ -354,7 +358,7 @@ def hcomp (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) :
       _ = ((a₁.toPath.map Γ.continuous_toFun).trans (a₂.toPath.map Γ.continuous_toFun)).reparam φ φ.continuous_toFun φ₀ φ₁ t
             := by rw [Path.map_trans a₁.toPath a₂.toPath (Γ.continuous_toFun)]
       _ = (r₁.toPath.trans r₂.toPath).reparam φ φ.continuous_toFun φ₀ φ₁ t
-            := by rw [hr₁a₁, hr₂a₂]
+            := by rw [hr₁a₁, hr₂a₂]; rfl
       _ = (r₁.trans r₂).reparam φ φ₀ φ₁ t
             := rfl
   exact hom_to_dihom Γ this
@@ -381,7 +385,7 @@ the interpolation between the two becomes directed.
 def reparam (p : Dipath x y) (f : D(I, I)) (g : D(I, I)) (hf_le_g : ∀ (t : I), f t ≤ g t)
   (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) (hg₀ : g 0 = 0) (hg₁ : g 1 = 1) :
     Dihomotopy (p.reparam f hf₀ hf₁) (p.reparam g hg₀ hg₁) where
-  toFun := p.comp (interpolate f g)
+  toFun := p.comp (interpolate f.toContinuousMap g.toContinuousMap)
   map_zero_left := fun x => by { unfold interpolate; norm_num; rfl }
   map_one_left := fun x => by { unfold interpolate; norm_num; rfl }
   prop' := fun t x hx => by
@@ -389,13 +393,13 @@ def reparam (p : Dipath x y) (f : D(I, I)) (g : D(I, I)) (hf_le_g : ∀ (t : I),
     cases' hx with hx hx
     · have : g 0 = f 0 := hg₀.trans (hf₀.symm)
       rw [hx]
-      calc (p ((interpolate f g) (t, 0)))
-        _ = p (f 0) := by rw [interpolate_constant_apply f g 0 (f 0) rfl this t]
+      calc (p ((interpolate f.toContinuousMap g.toContinuousMap) (t, 0)))
+        _ = p (f 0) := by rw [interpolate_constant_apply f.toContinuousMap g.toContinuousMap 0 (f 0) rfl this t]
     · have : g 1 = f 1 := hg₁.trans (hf₁.symm)
       rw [Set.mem_singleton_iff] at hx
       rw [hx]
-      calc (p ((interpolate f g) (t, 1)))
-        _ = p (f 1) := by rw [interpolate_constant_apply f g 1 (f 1) rfl this t]
+      calc (p ((interpolate f.toContinuousMap g.toContinuousMap) (t, 1)))
+        _ = p (f 1) := by rw [interpolate_constant_apply f.toContinuousMap g.toContinuousMap 1 (f 1) rfl this t]
   directed_toFun := fun t₀ t₁ γ γ_dipath =>
     (p.toDirectedMap).directed_toFun (γ.map _) (directed_interpolate f g hf_le_g γ γ_dipath)
 
@@ -418,8 +422,9 @@ def trans_refl (p : Dipath x y) : Dihomotopy p (p.trans (Dipath.refl y)) := by
   convert reparam p f g hf_le_g (rfl) (rfl)
     (Subtype.ext Path.Homotopy.transReflReparamAux_zero)
     (Subtype.ext Path.Homotopy.transReflReparamAux_one)
-
-  exact trans_refl_reparam_dipath p
+  · ext t
+    rfl
+  · exact trans_refl_reparam_dipath p
 
 /--
 For any `p : Dipath x y`, there is a dihomotopy from `(Dipath.refl x).trans p` to `p`.
@@ -437,7 +442,9 @@ def refl_trans (p : Dipath x y) : Dihomotopy ((Dipath.refl x).trans p) p := by
 
   convert reparam p f g hf_le_g (Subtype.ext reflTransReparamAux_zero)
     (Subtype.ext reflTransReparamAux_one) (rfl) (rfl)
-  exact refl_trans_reparam_dipath p
+  · exact refl_trans_reparam_dipath p
+  · ext t
+    rfl
 
 /--
 For any `p : Dipath x y`, there is a homotopy from `(Dipath.refl x).trans p` to `q.trans (Dipath.refl y)`,
@@ -698,10 +705,12 @@ lemma hpath_hext {x₀ x₁ x₂ x₃ : X} {p₁ : Dipath x₀ x₁} {p₂ : Dip
     @HEq (Dipath.Dihomotopic.Quotient _ _) ⟦p₁⟧ (Dipath.Dihomotopic.Quotient _ _) ⟦p₂⟧ := by
   obtain rfl : x₀ = x₂ := by convert hp 0 <;> simp
   obtain rfl : x₁ = x₃ := by convert hp 1 <;> simp
-  rw [heq_iff_eq]
-  congr
-  ext t
-  exact hp t
+  have hp' : p₁ = p₂ := by
+    apply Dipath.ext
+    funext t
+    exact hp t
+  subst p₂
+  rfl
 
 end Dihomotopic
 

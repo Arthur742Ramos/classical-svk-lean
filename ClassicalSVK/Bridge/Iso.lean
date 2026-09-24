@@ -1,5 +1,7 @@
 import ClassicalSVK.Bridge.Naturality2
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory
 open scoped FundamentalCategory
 

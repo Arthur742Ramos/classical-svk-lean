@@ -81,10 +81,10 @@ lemma path_covered_partiwse_of_dihomotopy_coveredPartwise_left {F : Dihomotopy f
   apply Dipath.covered_partwise.covered_partwise_of_covered_by_intervals
   intros i hi
   cases hF 0 i (Nat.succ_pos n) hi
-  case a.inl h =>
+  case inl h =>
     left
     exact subset_trans (left_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-  case a.inr h =>
+  case inr h =>
     right
     exact subset_trans (left_path_image_interval_subset_of_dihomotopy_subset F n hi) h
 
@@ -118,10 +118,10 @@ lemma path_covered_partiwse_of_dihomotopy_coveredPartwise_right {F : Dihomotopy 
   apply Dipath.covered_partwise.covered_partwise_of_covered_by_intervals
   intros i hi
   cases hF n i (Nat.lt_succ_self n) hi
-  case a.inl h =>
+  case inl h =>
     left
     exact subset_trans (right_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-  case a.inr h =>
+  case inr h =>
     right
     exact subset_trans (right_path_image_interval_subset_of_dihomotopy_subset F n hi) h
 
