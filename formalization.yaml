@@ -21,8 +21,8 @@ project:
   license: "Apache-2.0"
 
 classification:
-  arxiv: ["math.AT", "math.CT", "math.LO"]
-  msc2020: ["55Q05", "18B40", "03B35"]
+  arxiv: ["math.AT", "math.CT"]
+  msc2020: ["55Q05", "18B40"]
 
 sources:
   - title: "Groupoids and Van Kampen's Theorem"
