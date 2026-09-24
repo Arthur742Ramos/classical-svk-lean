@@ -58,12 +58,12 @@ Palomar entry.
 
 ## Status
 
-The frozen candidate is commit
-`fbbcc347d3b544ef9b72ed89d15345fc7c75b5fc` in
-[`classical-svk-lean`](https://github.com/Arthur742Ramos/classical-svk-lean).
-It passed the exact pinned Palomar renderer and mechanical replay; the exact
-candidate SHA, Challenge hash, reports, and gate details are recorded in
-[VERIFICATION.md](VERIFICATION.md). The earlier candidate
-`856159930dbdaa37aaa60978e76274cb1e84e96c` is historical because its selected
-proof invoked the packaged directed Van Kampen theorem. No Palomar intake,
-editorial acceptance, or registration is claimed.
+The candidate now uses Lean `leanprover/lean4:v4.35.0-rc2`, meeting Palomar's
+minimum, and Mathlib commit
+`065356127b1dc0016f66b7283ce0ce2c4055aa55`. The exact commit and challenge
+digest checked by the pinned Palomar renderer and mechanical replay are
+recorded in their [workflow runs](https://github.com/Arthur742Ramos/classical-svk-lean/actions).
+The prior Lean 4.28 candidate and its receipts are historical; see
+[VERIFICATION.md](VERIFICATION.md). These workflows prepare verification
+reports only. No Palomar intake, editorial acceptance, or registration is
+claimed.

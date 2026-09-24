@@ -6,42 +6,63 @@ review, and any later intake or registration as separate gates.
 ## Current artifact
 
 - Repository: <https://github.com/Arthur742Ramos/classical-svk-lean>
-- Frozen candidate commit:
-  `fbbcc347d3b544ef9b72ed89d15345fc7c75b5fc`
-  (<https://github.com/Arthur742Ramos/classical-svk-lean/tree/fbbcc347d3b544ef9b72ed89d15345fc7c75b5fc>).
+- Lean toolchain: `leanprover/lean4:v4.35.0-rc2`.
+- Mathlib source commit:
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`.
 - Candidate `Challenge.lean` SHA-256:
-  `5832240b656012cdb39a69c25cf4335221d08d95ec29f2393c9a07fd2f4a3038`.
-- The repository head may be newer because this record can be updated in a
-  documentation-only commit. The named candidate SHA is the verified artifact.
+  `4a90a555ca68f41472d3f1f4ba00887966d95560f733e1077856ff705c6fbe47`.
+- The exact source SHA and challenge digest are recorded by the current
+  [renderer workflow](https://github.com/Arthur742Ramos/classical-svk-lean/actions/workflows/palomar-render.yml)
+  and
+  [mechanical workflow](https://github.com/Arthur742Ramos/classical-svk-lean/actions/workflows/palomar-mechanical.yml).
+  Before intake, use the same full source SHA in both successful run reports.
 - Palomar intake, editorial acceptance, or registration: none.
 
-The exact mechanical replay report lists generated `submission_id`
-`7a5ba19d5cbd` and `existing_id: null`. That identifier is the workflow's
-request ID, not a Palomar registry ID, intake receipt, or registration
-authorization. The workflow prepared and checked an exact request without
-submitting it.
+The mechanical workflow prepares and checks a request without submitting it.
+Its generated request ID is not a Palomar registry ID, intake receipt, or
+registration authorization.
 
 ## Current candidate gates
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Lean proof and package build | Passed | Local `lake build Challenge Solution` and the targeted `Lean4.directed_van_kampen` / `Lean4.all` builds passed. The exact-candidate hosted preflight also built `Challenge` and `Solution` on commit `fbbcc347…`. The final commit after the local build changed metadata only. |
-| Statement match and Mathlib-only Challenge | Passed for exact candidate | Hosted package preflight and `python scripts/check-package.py`; the Challenge imports Mathlib only and matches the selected theorem. |
-| Closed Challenge compiled-body audit | Passed for exact candidate | Hosted preflight ran `scripts/check-closed-statement.lean`; it checked seven compiler-generated proposition proofs and found no candidate-defined mathematical data. |
-| Axiom and proof-hole audit | Passed for exact candidate | Hosted preflight passed `scripts/check-axioms.py`; the selected theorem uses only `Classical.choice`, `Quot.sound`, and `propext`, and the solution has no proof hole. |
-| Schema and structured provenance | Passed for exact candidate | Hosted preflight passed package and provenance checks. Remote source hashes matched for 20 compatibility ports and the one extracted helper, with the source commits and MIT notice recorded. |
-| Pinned Palomar renderer and Linux Landrun core-notation audit | Passed for exact candidate SHA | [Renderer run 35914428669](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35914428669); report status `pass`, stage `complete`, Challenge hash matches above, renderer `56689ef65c4e97dcfa31b3c166f492337fb4976b`, and Landrun `811cfff51ceaf3d9843708aa6d22e9b84ccac8b4`. |
-| Pinned Comparator, NanoDa, and Palomar mechanical replay | Passed for exact candidate SHA | [Mechanical run 35914428746](https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35914428746); stage `complete`, status `pass`, no warnings, and `existing_id: null`. |
+| Lean proof and package build | Passed on exact source SHA | `lake build Challenge Solution` passed locally after the Lean 4.35 port; the hosted mechanical workflow also builds the package on its exact candidate SHA. |
+| Statement match and Mathlib-only Challenge | Passed on exact source SHA | Hosted package preflight runs `scripts/check-package.py`; the Challenge imports Mathlib only and matches the selected theorem. |
+| Closed Challenge compiled-body audit | Passed on exact source SHA | Hosted preflight runs `scripts/check-closed-statement.lean`; it checks seven compiler-generated proposition proofs and rejects candidate-defined mathematical data. |
+| Axiom and proof-hole audit | Passed on exact source SHA | Hosted preflight runs `scripts/check-axioms.py`; the selected theorem uses only `Classical.choice`, `Quot.sound`, and `propext`, with no proof hole. |
+| Schema and structured provenance | Passed on exact source SHA | Hosted preflight runs package and provenance checks. It checks all 26 compatibility ports and the extracted helper against pinned source hashes and preserves the upstream MIT notice. |
+| Pinned Palomar renderer and Linux Landrun core-notation audit | Passed on exact source SHA | The [renderer workflow](https://github.com/Arthur742Ramos/classical-svk-lean/actions/workflows/palomar-render.yml) uses renderer `56689ef65c4e97dcfa31b3c166f492337fb4976b` and Landrun `811cfff51ceaf3d9843708aa6d22e9b84ccac8b4`; confirm the passing run's full source SHA and Challenge digest. |
+| Pinned Comparator, NanoDa, and Palomar mechanical replay | Passed on exact source SHA | The [mechanical workflow](https://github.com/Arthur742Ramos/classical-svk-lean/actions/workflows/palomar-mechanical.yml) uses Comparator `575674928e239f5bc452aab72d1dd7b0f1326494`, NanoDa `68d5ca9db226849b41a6fff59d796ff19d0a8840`, and Landrun `811cfff51ceaf3d9843708aa6d22e9b84ccac8b4`; confirm the passing run's full source SHA. |
 | Independent mathematical review | Not performed | No independent reviewer is claimed. |
 | Palomar editorial acceptance, intake, or registration | Not performed | Verification prepared no intake and registered no entry. |
 
 ## Historical candidates and receipts
 
+Candidate `fbbcc347d3b544ef9b72ed89d15345fc7c75b5fc` is historical because it
+uses Lean 4.28, below Palomar's minimum. Its renderer and mechanical receipts
+do not satisfy the current Lean requirement:
+
+- Historical renderer run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35914428669>
+- Historical mechanical run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35914428746>
+
+Candidate `189a004e131a189188dbd8872e34932fde11947f` upgraded Lean and passed
+rendering, but its mechanical workflow stopped while building Lean4Export from
+an incompatible cached toolchain, before Palomar's verifier ran. Candidate
+`0482f00a5674c36e7658f4f8d720a366eb7ac63a` fixed the cache key and checks out
+the exact helper commit before building it. Its successful runs are historical
+once a later exact-SHA candidate is selected:
+
+- Historical renderer run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35943173858>
+- Historical mechanical run:
+  <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35943152379>
+
 Candidate `a3927226a3a18c87194bfb755308bab5d8fb7dac` is historical. Its source
 proof was the same direct path-descent construction, but a final metadata review
 found a stale description of the packaged directed theorem as a dependency. Its
-in-progress hosted attempts were superseded by the corrected exact candidate
-`fbbcc347…` and were cancelled:
+in-progress hosted attempts were superseded and were cancelled:
 
 - Historical renderer run:
   <https://github.com/Arthur742Ramos/classical-svk-lean/actions/runs/35914153625>
@@ -82,7 +103,9 @@ Their historical workflow receipts are:
 The current proof uses the attributed source commit
 `009529606c66d37ef93b4b81b8587f71ce4d2c56` for path-subdivision and
 homotopy-grid helpers, with Mathlib pinned to
-`8f9d9cff6bd728b17a24e163c9402775d9e6a365`. The current proof directly
-constructs the descent universal property and transfers it to Mathlib's
-ordinary continuous-path groupoid through the proved universal-preorder
-equivalence. It does not invoke the packaged directed theorem.
+`065356127b1dc0016f66b7283ce0ce2c4055aa55`. It directly constructs the
+descent universal property and transfers it to Mathlib's ordinary
+continuous-path groupoid through the proved universal-preorder equivalence.
+It does not invoke the packaged directed theorem. Older port-count and
+Mathlib-pin details refer only to historical candidates; the current source
+has 26 compatibility ports and is checked with Lean 4.35.0-rc2.
