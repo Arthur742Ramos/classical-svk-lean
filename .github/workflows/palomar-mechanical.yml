@@ -175,7 +175,7 @@ jobs:
           path: |
             ~/.cache/classical-svk-palomar-tools
             ~/.elan/toolchains
-          key: classical-svk-tools-575674928e239f5b-68d5ca9db226849b-811cfff51ceaf3d9
+          key: classical-svk-tools-575674928e239f5b-68d5ca9db226849b-811cfff51ceaf3d9-${{ steps.prepare.outputs.lean4export_commit }}-${{ steps.prepare.outputs.lean_toolchain }}
 
       - name: Build pinned Palomar tools
         if: steps.prepare.outputs.ready == 'true'
@@ -200,8 +200,9 @@ jobs:
           cargo build --release --locked --manifest-path "$PALOMAR_TOOLS/nanoda/Cargo.toml"
           if [ ! -d "$PALOMAR_TOOLS/lean4export/.git" ]; then
             git clone --filter=blob:none https://github.com/leanprover/lean4export.git "$PALOMAR_TOOLS/lean4export"
-            git -C "$PALOMAR_TOOLS/lean4export" checkout "$LEAN4EXPORT_COMMIT"
           fi
+          git -C "$PALOMAR_TOOLS/lean4export" fetch --filter=blob:none origin "$LEAN4EXPORT_COMMIT"
+          git -C "$PALOMAR_TOOLS/lean4export" checkout --detach "$LEAN4EXPORT_COMMIT"
           LEAN4EXPORT_TOOLCHAIN="$(tr -d '\r\n' < "$PALOMAR_TOOLS/lean4export/lean-toolchain")"
           test "$(git -C "$PALOMAR_TOOLS/lean4export" rev-parse HEAD)" = "$LEAN4EXPORT_COMMIT"
           python -c 'import sys; sys.path.insert(0, "pipeline"); from scripts.verify_submission import compatible_lean4export_toolchain; raise SystemExit(not compatible_lean4export_toolchain(sys.argv[1], sys.argv[2]))' "$SUBMISSION_TOOLCHAIN" "$LEAN4EXPORT_TOOLCHAIN"
